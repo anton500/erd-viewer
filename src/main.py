@@ -3,6 +3,8 @@ from os import read
 from pathlib import Path
 from dataclasses import dataclass, field
 
+from graphviz import Digraph
+
 @dataclass
 class Column:
     """Class describes column of table in database"""
@@ -28,6 +30,12 @@ class Reference:
     referenced_column_name: str
 
 class Dot:
+
+    HTML_TABLE_TEMPLATE = '<<table>{thead}{tbody}</table>>'
+    HTML_TABLE_HEAD_TEMPLATE = '<tr><td colspan="2">{thead}</td></tr>'
+    HTML_TABLE_BODY_TEMPLATE = '<tbody>{tbody}</tbody>'
+    HTML_TABLE_ROW_TEMPLATE = '<tr><td port="{port}">{name}</td><td>{datatype}</td></tr>'
+    
     def __init__(self) -> None:
         self.tables: dict[str, Table] = {}
         self.references: dict[str, Reference] = {}
@@ -40,6 +48,28 @@ class Dot:
 
     def add_reference(self, ref_name: str, reference: Reference) -> None:
         self.references[ref_name] = reference
+
+    def __get_html_table(self, table: Table) -> str:
+        thead = self.HTML_TABLE_HEAD_TEMPLATE.format(thead=table.table_name)
+        tbody = ''
+        for column in table.columns:
+            tbody += self.HTML_TABLE_ROW_TEMPLATE.format(port=column.name, name=column.name, datatype=column.data_type)
+        
+        return self.HTML_TABLE_TEMPLATE.format(thead=thead, tbody=tbody)
+        
+    def get_dot(self, **kwargs) -> Digraph:
+        dot = Digraph(**kwargs)
+
+        for name, table in self.tables.items():
+            dot.node(name, label=self.__get_html_table(table))
+
+        for ref in self.references.values():
+            dot.edge(
+                ':'.join([ref.table_name, ref.column_name]), 
+                ':'.join([ref.referenced_table_name, ref.referenced_column_name])
+                )
+
+        return dot
 
 def read_data_from_csv(tables_csv_path: Path, references_csv_path: Path) -> None:
 
@@ -80,9 +110,14 @@ def read_data_from_csv(tables_csv_path: Path, references_csv_path: Path) -> None
                     )
                 )
 
+    for engine in ['dot', 'neato', 'twopi', 'fdp', 'osage', 'patchwork', 'sfdp']:
+        print(engine)
+        dot.get_dot(filename=f'{engine}_ortho_false', engine=engine, format='svg', graph_attr={'splines': 'ortho', 'overlap': 'false'}, node_attr={'shape': 'plaintext'}).render(view=True)
+        dot.get_dot(filename=f'{engine}_ortho_prism', engine=engine, format='svg', graph_attr={'splines': 'ortho', 'overlap': 'prism'}, node_attr={'shape': 'plaintext'}).render(view=True)
+        dot.get_dot(filename=f'{engine}_ortho_true', engine=engine, format='svg', graph_attr={'splines': 'ortho', 'overlap': 'true'}, node_attr={'shape': 'plaintext'}).render(view=True)
+        dot.get_dot(filename=f'{engine}', engine=engine, format='svg', node_attr={'shape': 'plaintext'}).render(view=False)
 
-    print(dot.tables['dlfe.TasksUpdate'])
-    print(dot.references['dlfe.LeaseContracts.ProjectID->dlfe.Projects.ProjectID'])
+    return None
 
 if __name__ == '__main__':
     read_data_from_csv(Path('ddl.csv'), Path('references.csv'))
