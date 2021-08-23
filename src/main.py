@@ -6,15 +6,14 @@ from dataclasses import dataclass, field
 @dataclass
 class Column:
     """Class describes column of table in database"""
-    name: str = None
-    data_type: str = None
-    nullable: str = None
+    name: str
+    data_type: str
+    nullable: str
 
 @dataclass
 class Table:
     """Class represents table in database."""
-    schema: str = None
-    name: str = None
+    table_name: str
     columns: list[Column] = field(default_factory=list)
 
     def add_column(self, column: Column) -> None:
@@ -23,10 +22,10 @@ class Table:
 @dataclass
 class Reference:
     """Class represents reference between two tables"""
-    table_name: str = None
-    column_name : str = None
-    referenced_table_name: str = None
-    referenced_column_name: str = None
+    table_name: str
+    column_name: str
+    referenced_table_name: str
+    referenced_column_name: str
 
 class Dot:
     def __init__(self) -> None:
@@ -52,7 +51,7 @@ def read_data_from_csv(tables_csv_path: Path, references_csv_path: Path) -> None
             table_name = '.'.join([row['TABLE_SCHEMA'], row['TABLE_NAME']])
 
             if table_name not in dot.tables:
-                dot.add_table(table_name, Table(name=table_name))
+                dot.add_table(table_name, Table(table_name=table_name))
 
             dot[table_name].add_column(
                 Column(
