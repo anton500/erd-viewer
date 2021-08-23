@@ -19,47 +19,31 @@ class Table:
     def add_column(self, column: Column) -> None:
         return self.columns.append(column)
 
-@dataclass
-class Tables:
-    """Class is a list of all tables."""
-    tables: dict[str, Table] = field(default_factory=dict)
+class Dot:
+    def __init__(self) -> None:
+        self.tables = {}
 
-    def add_table(self, name: str, table: Table) -> None:
-        self.tables[name] = table
+    def __getitem__(self, table_name: str) -> Table:
+        return self.tables[table_name]
 
-def is_new_table(prev_schema, prev_table, cur_schema, cur_table) -> bool:
-    if prev_schema and prev_table and (prev_schema != cur_schema or prev_table != cur_table):
-        return True
-    return False
+    def add_table(self, table_name: str, table: Table) -> None:
+        self.tables[table_name] = table
 
 def read_data_from_csv(csv_path: Path) -> None:
 
-    tables = Tables()
-    t = Table()
+    dot = Dot()
 
     with open(csv_path, mode='r') as csvfile:
         reader = csv.DictReader(csvfile, delimiter=';')
-
-        prev_schema = None
-        prev_table = None
-
         for row in reader:
-            cur_schema = row['TABLE_SCHEMA']
-            cur_table = row['TABLE_NAME']
-            col = Column(name=row['COLUMN_NAME'], data_type=row['DATA_TYPE'], nullable=row['IS_NULLABLE'])
+            table_name = '.'.join([row['TABLE_SCHEMA'], row['TABLE_NAME']])
 
-            if is_new_table(prev_schema, prev_table, cur_schema, cur_table):
-                t.schema = prev_schema
-                t.name = prev_table
-                tables.add_table(name='.'.join([t.schema, t.name]), table=t)
-                t = Table()
+            if table_name not in dot.tables:
+                dot.add_table(table_name, Table(name=table_name))
 
-            t.add_column(col)
+            dot[table_name].add_column(Column(name=row['COLUMN_NAME'], data_type=row['DATA_TYPE'], nullable=row['IS_NULLABLE']))
 
-            prev_schema = cur_schema
-            prev_table = cur_table
-
-    print(tables.tables['dlfe.TasksUpdate'])
+    print(dot.tables['dlfe.TasksUpdate'])
 
 if __name__ == '__main__':
     read_data_from_csv(Path('ddl.csv'))
