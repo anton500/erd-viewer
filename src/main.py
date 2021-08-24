@@ -78,26 +78,26 @@ def read_data_from_csv(tables_csv_path: Path, references_csv_path: Path) -> None
     with open(tables_csv_path) as csvfile:
         reader = csv.DictReader(f=csvfile, delimiter=';')
         for row in reader:
-            table_name = '.'.join([row['TABLE_SCHEMA'], row['TABLE_NAME']])
+            table_name = '.'.join([row['schema'], row['table']])
 
             if table_name not in dot.tables:
                 dot.add_table(table_name, Table(table_name=table_name))
 
             dot[table_name].add_column(
                 Column(
-                    name=row['COLUMN_NAME'], 
-                    data_type=row['DATA_TYPE'], 
-                    nullable=row['IS_NULLABLE']
+                    name=row['column'], 
+                    data_type=row['column_type'], 
+                    nullable=''
                     )
                 )
 
     with open(references_csv_path) as csvfile:
         reader = csv.DictReader(f=csvfile, delimiter=';')
         for row in reader:
-            table_name = '.'.join([row['FK schema'], row['FK table']])
-            table_column = row['FK column']
-            ref_table_name = '.'.join([row['Referenced schema'], row['Referenced table']])
-            ref_table_column = row['Referenced column']
+            table_name = '.'.join([row['parent_schema'], row['parent_table']])
+            table_column = row['parent_column']
+            ref_table_name = '.'.join([row['referenced_schema'], row['referenced_table']])
+            ref_table_column = row['referenced_column']
 
             ref_name = f"{'.'.join([table_name, table_column])}->{'.'.join([ref_table_name, ref_table_column])}"
             dot.add_reference(
