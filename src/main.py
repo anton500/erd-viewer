@@ -43,7 +43,7 @@ class Dot:
 
     __HTML_TABLE_TEMPLATE = '<<table>{thead}{tbody}</table>>'
     __HTML_TABLE_HEAD_TEMPLATE = '<tr><td colspan="2">{thead}</td></tr>'
-    __HTML_TABLE_BODY_TEMPLATE = '<tbody>{tbody}</tbody>'
+    __HTML_TABLE_BODY_TEMPLATE = '{tbody}'
     __HTML_TABLE_ROW_TEMPLATE = '<tr><td port="{port}">{name}</td><td>{datatype}</td></tr>'
 
     def __init__(self) -> None:
@@ -148,4 +148,4 @@ def read_data_from_csv(tables_csv_path: Path, references_csv_path: Path) -> None
     return None
 
 if __name__ == '__main__':
-    read_data_from_csv(Path('data/ddl.csv'), Path('data/references.csv'))
+    read_data_from_csv(Path('../data/ddl.csv'), Path('../data/references.csv'))
