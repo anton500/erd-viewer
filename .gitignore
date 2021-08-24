@@ -2,3 +2,4 @@
 data/
 dot/
 svg/
+src/__pycache__/*
