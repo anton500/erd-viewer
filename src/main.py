@@ -148,4 +148,4 @@ def read_data_from_csv(tables_csv_path: Path, references_csv_path: Path) -> None
     return None
 
 if __name__ == '__main__':
-    read_data_from_csv(Path('ddl.csv'), Path('references.csv'))
+    read_data_from_csv(Path('data/ddl.csv'), Path('data/references.csv'))
