@@ -1,26 +1,45 @@
-DECLARE @SCHEMA_ID int = 5; -- 5 - dlfe
-
 SELECT
-    schemas.name AS "schema",
-    tables.name AS "table",
-    columns.name AS "column",
-    column_types.name AS "column_type"
+    schemas.name AS "name",
+    tables.name AS "name",
+    (
+        SELECT
+            columns.name AS "name",
+            CASE
+                WHEN column_types.name IN ('varchar', 'char', 'varbinary', 'binary') THEN column_types.name + '(' + IIF(columns.max_length = -1, 'max', CAST(columns.max_length AS VARCHAR(25))) + ')'
+                WHEN column_types.name IN ('nvarchar', 'nchar') THEN column_types.name + '(' + IIF(columns.max_length = -1, 'max', CAST(columns.max_length / 2 AS VARCHAR(25)))+ ')'
+                WHEN column_types.name IN ('decimal', 'numeric') THEN column_types.name + '(' + CAST(columns.precision AS VARCHAR(25)) + ',' + CAST(columns.scale AS VARCHAR(25)) + ')'
+                WHEN column_types.name IN ('datetime2') THEN column_types.name + '(' + CAST(columns.scale AS VARCHAR(25)) + ')'
+                ELSE column_types.name
+            END AS "type",
+            CASE columns.is_nullable
+                WHEN 0 THEN 'NOT NULL'
+                WHEN 1 THEN 'NULL'
+            END AS "null",
+            CASE
+                WHEN i_columns.column_id IS NOT NULL THEN 'PK'
+                WHEN fk_columns.parent_column_id IS NOT NULL THEN 'FK'
+                ELSE ''
+            END AS "key"
+        FROM sys.columns AS columns
+        JOIN sys.types AS column_types ON columns.user_type_id = column_types.user_type_id
+        LEFT JOIN
+            sys.index_columns AS i_columns
+            JOIN sys.indexes AS indexes ON
+                i_columns.object_id = indexes.object_id
+                AND i_columns.index_id = indexes.index_id
+                AND indexes.is_primary_key = 1
+        ON columns.object_id = i_columns.object_id AND columns.column_id = i_columns.column_id
+        LEFT JOIN sys.foreign_key_columns AS fk_columns ON
+            columns.object_id = fk_columns.parent_object_id
+            AND columns.column_id = fk_columns.parent_column_id
+        WHERE columns.object_id = tables.object_id
+        ORDER BY columns.column_id
+        FOR JSON PATH
+    ) AS columns
 FROM sys.schemas AS schemas
 JOIN sys.tables AS tables ON schemas.schema_id = tables.schema_id
-JOIN sys.columns AS columns ON tables.object_id = columns.object_id
-JOIN sys.types AS column_types ON columns.user_type_id = column_types.user_type_id
-WHERE
-    schemas.schema_id = @SCHEMA_ID
-    OR EXISTS (
-        SELECT *
-        FROM sys.foreign_key_columns AS fk_columns
-        JOIN sys.tables AS parent_tables ON fk_columns.parent_object_id = parent_tables.object_id
-        JOIN sys.tables AS referenced_tables ON fk_columns.referenced_object_id = referenced_tables.object_id
-        WHERE
-            tables.object_id IN (fk_columns.parent_object_id, fk_columns.referenced_object_id)
-            AND @SCHEMA_ID IN (parent_tables.schema_id, referenced_tables.schema_id)
-    )
+WHERE tables.type = 'U'
 ORDER BY
     schemas.name,
-    tables.name,
-    columns.column_id
+    tables.name
+FOR JSON AUTO, ROOT('schemas');
