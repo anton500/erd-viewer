@@ -21,5 +21,4 @@ WHERE
     OR key_tables.type = 'U'
 ORDER BY
     fk_schemas.name,
-    fk_tables.name
-FOR JSON PATH;
+    fk_tables.name;
