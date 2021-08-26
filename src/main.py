@@ -1,5 +1,5 @@
 import csv
-from os import read
+import json
 from pathlib import Path
 from dataclasses import dataclass, field
 
@@ -9,7 +9,7 @@ from graphviz import Digraph
 class Column:
     """Class describes column of table in database"""
     name: str
-    data_type: str
+    type: str
     null: str
     key: str
 
@@ -17,11 +17,10 @@ class Column:
 class Table:
     """Class represents table in database."""
     name: str
-    fullname: str
     columns: dict[str, Column] = field(default_factory=dict)
 
-    def add_column(self, column_name: str, column: Column) -> None:
-        self.columns[column_name] = column
+    def add_column(self, name: str, column: Column) -> None:
+        self.columns[name] = column
 
 @dataclass
 class Schema:
@@ -29,16 +28,19 @@ class Schema:
     name: str
     tables: dict[str, Table] = field(default_factory=dict)
 
-    def add_table(self, table_name: str, table: Table) -> None:
-        self.tables[table_name] = table
+    def add_table(self, name: str, table: Table) -> None:
+        self.tables[name] = table
 
 @dataclass
 class Reference:
     """Class represents reference between two tables"""
-    table_name: str
-    column_name: str
-    referenced_table_name: str
-    referenced_column_name: str
+
+    fk_schema: str
+    fk_table: str
+    fk_column: str
+    key_schema: str
+    key_table: str
+    key_column: str
 
 class Dot:
 
@@ -51,17 +53,17 @@ class Dot:
         self.schemas: dict[str, Schema] = {}
         self.references: dict[str, Reference] = {}
 
-    def add_schema(self, schema_name: str, schema: Schema) -> None:
-        self.schemas[schema_name] = schema
+    def add_schema(self, name: str, schema: Schema) -> None:
+        self.schemas[name] = schema
 
-    def add_reference(self, ref_name: str, reference: Reference) -> None:
-        self.references[ref_name] = reference
+    def add_reference(self, name: str, reference: Reference) -> None:
+        self.references[name] = reference
 
-    def __get_html_table(self, table: Table) -> str:
-        thead = self.__HTML_TABLE_HEAD_TEMPLATE.format(thead=table.fullname)
+    def __get_html_table(self, schema_name: str, table: Table) -> str:
+        thead = self.__HTML_TABLE_HEAD_TEMPLATE.format(thead='.'.join([schema_name, table.name]))
         tbody = ''
         for column in table.columns.values():
-            tbody += self.__HTML_TABLE_ROW_TEMPLATE.format(port=column.name, name=column.name, datatype=column.data_type)
+            tbody += self.__HTML_TABLE_ROW_TEMPLATE.format(port=column.name, name=column.name, datatype=column.type)
 
         tbody = self.__HTML_TABLE_BODY_TEMPLATE.format(tbody=tbody)
         return self.__HTML_TABLE_TEMPLATE.format(thead=thead, tbody=tbody)
@@ -71,12 +73,15 @@ class Dot:
 
         for schema in self.schemas.values():
             for table in schema.tables.values():
-                dot.node(table.fullname, label=self.__get_html_table(table=table))
+                dot.node(
+                    '.'.join([schema.name, table.name]),
+                    label=self.__get_html_table(schema_name=schema.name, table=table)
+                    )
 
         for ref in self.references.values():
             dot.edge(
-                ':'.join([ref.table_name, ref.column_name]),
-                ':'.join([ref.referenced_table_name, ref.referenced_column_name])
+                ':'.join([ref.key_table, ref.key_column]),
+                ':'.join([ref.fk_table, ref.fk_column])
                 )
 
         return dot
@@ -98,18 +103,15 @@ def read_data_from_csv(tables_csv_path: Path, references_csv_path: Path) -> None
 
             if table_name not in dot.schemas[schema_name].tables:
                 dot.schemas[schema_name].add_table(
-                    table_name=table_name,
-                    table=Table(
-                        name=table_name,
-                        fullname='.'.join([schema_name, table_name])
-                        )
+                    name=table_name,
+                    table=Table(name=table_name)
                     )
 
             dot.schemas[schema_name].tables[table_name].add_column(
-                column_name=column_name,
+                name=column_name,
                 column=Column(
                     name=column_name,
-                    data_type=column_type,
+                    type=column_type,
                     null='',
                     key=''
                     )
@@ -127,10 +129,12 @@ def read_data_from_csv(tables_csv_path: Path, references_csv_path: Path) -> None
             dot.add_reference(
                 ref_name,
                 Reference(
-                    table_name=table_name,
-                    column_name=table_column,
-                    referenced_table_name=ref_table_name,
-                    referenced_column_name=ref_table_column
+                    fk_schema='',
+                    fk_table=ref_table_name,
+                    fk_column=ref_table_column,
+                    key_schema='',
+                    key_table=table_name,
+                    key_column=table_column
                     )
                 )
 
@@ -138,5 +142,35 @@ def read_data_from_csv(tables_csv_path: Path, references_csv_path: Path) -> None
 
     return None
 
+def deserialize_json_into_dot(json_obj: list) -> Dot:
+    dot = Dot()
+
+    for schema in json_obj:
+        schema_name = schema['name']
+        dot.add_schema(schema_name, Schema(schema_name))
+        for table in schema['tables']:
+            table_name = table['name']
+            dot.schemas[schema_name].add_table(table_name, Table(table_name))
+            for column in table['columns']:
+                dot.schemas[schema_name].tables[table_name].add_column(
+                    column['name'],
+                    Column(
+                        name=column['name'],
+                        type=column['type'],
+                        null=column['null'],
+                        key=column['key'])
+                    )
+    return dot
+
+def read_data_from_json(tables_json_path: Path, references_json_path: Path) -> None:
+    with open(tables_json_path) as j:
+        json_obj = json.loads(j.read())
+
+    dot = deserialize_json_into_dot(json_obj)
+
+    print(dot.schemas['dlfe'].tables['LeaseContracts'].columns['RecId'].type)
+    return
+
 if __name__ == '__main__':
-    read_data_from_csv(Path('data/ddl.csv'), Path('data/references.csv'))
+    read_data_from_json(Path('data/ddl.json'), Path('data/references.json'))
+    #read_data_from_csv(Path('data/ddl.csv'), Path('data/references.csv'))
