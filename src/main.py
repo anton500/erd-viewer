@@ -10,7 +10,8 @@ class Column:
     """Class describes column of table in database"""
     name: str
     data_type: str
-    nullable: str
+    null: str
+    key: str
 
 @dataclass
 class Table:
@@ -50,14 +51,8 @@ class Dot:
         self.schemas: dict[str, Schema] = {}
         self.references: dict[str, Reference] = {}
 
-    # def __getitem__(self, schema_name: str) -> Table:
-    #     return self.schemas[schema_name]
-
     def add_schema(self, schema_name: str, schema: Schema) -> None:
         self.schemas[schema_name] = schema
-
-    # def add_table_to_schema(self, schema_name: str, table_name: str, table: Table) -> None:
-    #     self.schemas[schema_name].tables[table_name] = table
 
     def add_reference(self, ref_name: str, reference: Reference) -> None:
         self.references[ref_name] = reference
@@ -67,7 +62,7 @@ class Dot:
         tbody = ''
         for column in table.columns.values():
             tbody += self.__HTML_TABLE_ROW_TEMPLATE.format(port=column.name, name=column.name, datatype=column.data_type)
-        
+
         tbody = self.__HTML_TABLE_BODY_TEMPLATE.format(tbody=tbody)
         return self.__HTML_TABLE_TEMPLATE.format(thead=thead, tbody=tbody)
 
@@ -103,9 +98,9 @@ def read_data_from_csv(tables_csv_path: Path, references_csv_path: Path) -> None
 
             if table_name not in dot.schemas[schema_name].tables:
                 dot.schemas[schema_name].add_table(
-                    table_name=table_name, 
+                    table_name=table_name,
                     table=Table(
-                        name=table_name, 
+                        name=table_name,
                         fullname='.'.join([schema_name, table_name])
                         )
                     )
@@ -115,7 +110,8 @@ def read_data_from_csv(tables_csv_path: Path, references_csv_path: Path) -> None
                 column=Column(
                     name=column_name,
                     data_type=column_type,
-                    nullable=''
+                    null='',
+                    key=''
                     )
                 )
 
@@ -138,14 +134,9 @@ def read_data_from_csv(tables_csv_path: Path, references_csv_path: Path) -> None
                     )
                 )
 
-    for engine in ['dot', 'neato', 'twopi', 'fdp', 'osage', 'patchwork', 'sfdp']:
-        print(engine)
-        #dot.get_dot(filename=f'{engine}_ortho_false', engine=engine, format='svg', graph_attr={'splines': 'ortho', 'overlap': 'false'}, node_attr={'shape': 'plaintext'}).render(view=True)
-        #dot.get_dot(filename=f'{engine}_ortho_prism', engine=engine, format='svg', graph_attr={'splines': 'ortho', 'overlap': 'prism'}, node_attr={'shape': 'plaintext'}).render(view=True)
-        #dot.get_dot(filename=f'{engine}_ortho_true', engine=engine, format='svg', graph_attr={'splines': 'ortho', 'overlap': 'true'}, node_attr={'shape': 'plaintext'}).render(view=True)
-        dot.get_dot(filename=f'{engine}', engine=engine, format='svg', node_attr={'shape': 'plaintext'}).render(view=False)
+        dot.get_dot(filename='dot.dot', directory=Path('dot/'), node_attr={'shape': 'plaintext'}).save()
 
     return None
 
 if __name__ == '__main__':
-    read_data_from_csv(Path('../data/ddl.csv'), Path('../data/references.csv'))
+    read_data_from_csv(Path('data/ddl.csv'), Path('data/references.csv'))
