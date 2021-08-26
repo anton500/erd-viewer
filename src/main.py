@@ -1,5 +1,6 @@
 import csv
 import json
+import argparse
 from pathlib import Path
 from dataclasses import dataclass, field
 
@@ -51,13 +52,13 @@ class Dot:
 
     def __init__(self) -> None:
         self.schemas: dict[str, Schema] = {}
-        self.references: dict[str, Reference] = {}
+        self.references: list[Reference] = []
 
     def add_schema(self, name: str, schema: Schema) -> None:
         self.schemas[name] = schema
 
-    def add_reference(self, name: str, reference: Reference) -> None:
-        self.references[name] = reference
+    def add_reference(self, reference: Reference) -> None:
+        self.references.append(reference)
 
     def __get_html_table(self, schema_name: str, table: Table) -> str:
         thead = self.__HTML_TABLE_HEAD_TEMPLATE.format(thead='.'.join([schema_name, table.name]))
@@ -78,7 +79,7 @@ class Dot:
                     label=self.__get_html_table(schema_name=schema.name, table=table)
                     )
 
-        for ref in self.references.values():
+        for ref in self.references:
             dot.edge(
                 ':'.join([ref.key_table, ref.key_column]),
                 ':'.join([ref.fk_table, ref.fk_column])
@@ -125,9 +126,7 @@ def read_data_from_csv(tables_csv_path: Path, references_csv_path: Path) -> None
             ref_table_name = '.'.join([row['referenced_schema'], row['referenced_table']])
             ref_table_column = row['referenced_column']
 
-            ref_name = f"{'.'.join([table_name, table_column])}->{'.'.join([ref_table_name, ref_table_column])}"
             dot.add_reference(
-                ref_name,
                 Reference(
                     fk_schema='',
                     fk_table=ref_table_name,
@@ -142,9 +141,7 @@ def read_data_from_csv(tables_csv_path: Path, references_csv_path: Path) -> None
 
     return None
 
-def deserialize_json_into_dot(json_obj: list) -> Dot:
-    dot = Dot()
-
+def deserialize_json_tables_into_dot(json_obj: list, dot: Dot) -> None:
     for schema in json_obj:
         schema_name = schema['name']
         dot.add_schema(schema_name, Schema(schema_name))
@@ -160,17 +157,68 @@ def deserialize_json_into_dot(json_obj: list) -> Dot:
                         null=column['null'],
                         key=column['key'])
                     )
-    return dot
+    return
 
-def read_data_from_json(tables_json_path: Path, references_json_path: Path) -> None:
+def deserialize_json_refs_into_dot(json_obj: list, dot: Dot) -> None:
+    for ref in json_obj:
+        dot.add_reference(
+            Reference(
+                fk_schema=ref['fk_schema'],
+                fk_table=ref['fk_table'],
+                fk_column=ref['fk_column'],
+                key_schema=ref['key_schema'],
+                key_table=ref['key_table'],
+                key_column=ref['key_column']
+            )
+        )
+
+    return
+
+def read_data_from_json(tables_json_path: Path, references_json_path: Path, dot: Dot) -> None:
     with open(tables_json_path) as j:
-        json_obj = json.loads(j.read())
+        json_tables_obj = json.loads(j.read())
 
-    dot = deserialize_json_into_dot(json_obj)
+    with open(references_json_path) as j:
+        json_ref_obj = json.loads(j.read())
 
-    print(dot.schemas['dlfe'].tables['LeaseContracts'].columns['RecId'].type)
+    deserialize_json_tables_into_dot(json_tables_obj, dot)
+    deserialize_json_refs_into_dot(json_ref_obj, dot)
+
     return
 
 if __name__ == '__main__':
-    read_data_from_json(Path('data/ddl.json'), Path('data/references.json'))
+    parser = argparse.ArgumentParser(description='Create DOT file for Graphviz render from db structure and references.')
+    parser.add_argument(
+        '-t',
+        '--tables',
+        dest='tab',
+        help='file containing db tables',
+        required=True,
+        type=Path
+        )
+    parser.add_argument(
+        '-r',
+        '--references',
+        dest='ref',
+        help='file containing references between tables',
+        required=True,
+        type=Path
+        )
+    parser.add_argument(
+        '-o',
+        '--output',
+        dest='out',
+        help='output dot file',
+        required=True,
+        type=Path
+        )
+    parser.add_argument('-S', '--schema', dest='schema', help='process only selected schema')
+    parser.add_argument('-T', '--table', dest='table', help='process only selected tables')
+    args = parser.parse_args()
+
+    dot = Dot()
+
+    read_data_from_json(tables_json_path=Path(args.tab), references_json_path=Path(args.ref), dot=dot)
+
+    dot.get_dot(filename=args.out, node_attr={'shape': 'plaintext'}).save()
     #read_data_from_csv(Path('data/ddl.csv'), Path('data/references.csv'))
