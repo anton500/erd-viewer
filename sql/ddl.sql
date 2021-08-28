@@ -42,4 +42,4 @@ WHERE tables.type = 'U'
 ORDER BY
     schemas.name,
     tables.name
-FOR JSON AUTO, ROOT('schemas');
+FOR JSON AUTO;
