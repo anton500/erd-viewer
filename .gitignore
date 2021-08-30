@@ -1,5 +1,5 @@
 .*/
 data/
-dot/
-svg/
+graphs/
 *.py[c]
+*/__pycache__/

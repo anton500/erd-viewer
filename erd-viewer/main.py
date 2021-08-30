@@ -1,5 +1,6 @@
 import json
 import argparse
+import uuid
 from pathlib import Path
 from dataclasses import dataclass, field
 
@@ -124,8 +125,9 @@ def read_json(json_path: Path) -> str:
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description='Create DOT file for Graphviz render from db schema.')
     parser.add_argument('-f', '--file', dest='file', help='json file containing db schema', required=True, type=Path)
-    parser.add_argument('-o', '--output', dest='output', help='output dot file', required=True, type=Path)
-    parser.add_argument('-r', '--render', dest='render', help='output rendered file', type=Path)
+    parser.add_argument('-n', '--name', dest='name', help='graph name', type=str)
+    #parser.add_argument('-o', '--output', dest='output', help='output dot file', required=True, type=Path)
+    #parser.add_argument('-r', '--render', dest='render', help='output rendered file', type=Path)
     parser.add_argument('-s', '--schema', dest='schema', help='process only selected schema')
     parser.add_argument('-t', '--table', dest='table', help='process only selected tables')
     parser.add_argument('--no-render', dest='norender', help='only save, don\'t render')
@@ -137,15 +139,16 @@ def main(args) -> str:
     database = deserialize_json(json_str)
     dot = Dot(database)
     digraph = dot.get_digraph(
-        engine='neato', 
-        format='svg', 
+        name=args.name if args.name else str(uuid.uuid4()),
+        engine='neato',
+        format='svg',
         graph_attr={'splines': 'spline', 'overlap': 'prism'}, 
         node_attr={'shape': 'plaintext'}
     )
 
     if args.norender is None:
-        return digraph.render(filename=args.render, renderer='svg', cleanup=True)
-    return digraph.save(filename=args.output)
+        return digraph.render(directory=Path('graphs/'))
+    return digraph.save(directory=Path('graphs/'))
      
 if __name__ == '__main__':
     main(parse_args())

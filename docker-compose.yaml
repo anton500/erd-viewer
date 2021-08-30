@@ -1,0 +1,9 @@
+version: "3.9"
+services:
+  erd-viewer:
+    build:
+      context: .
+    image: erd-viewer:latest
+    volumes:
+      - ./data:/usr/erd-viewer/data:z
+      - ./graphs:/usr/erd-viewer/graphs:z

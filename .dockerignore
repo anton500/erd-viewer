@@ -1,10 +1,2 @@
-.*/
-data/
-dot/
-sql/
-svg/
 *.py[c]
 */__pycache__
-LICENSE.txt
-README.md
-Dockerfile
