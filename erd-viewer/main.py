@@ -147,8 +147,8 @@ def main(args) -> str:
     )
 
     if args.norender is None:
-        return digraph.render(directory=Path('graphs/'))
-    return digraph.save(directory=Path('graphs/'))
+        return digraph.render(directory=Path('erd-viewer/static/graphs'), cleanup=True)
+    return
      
 if __name__ == '__main__':
     main(parse_args())

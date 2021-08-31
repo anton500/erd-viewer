@@ -1,2 +1,3 @@
 *.py[c]
-*/__pycache__
+__pycache__/
+graphs/
