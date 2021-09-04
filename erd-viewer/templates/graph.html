@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <script type=text/javascript src="js/svg-pan-zoom.min.js"></script>
+    <script type=text/javascript src="static/js/svg-pan-zoom.min.js"></script>
 </head>
 
 <body style="overflow: hidden; margin: 0px;">
@@ -18,7 +18,7 @@
         </datalist>
     </div>
 
-    <object id="svg-graph" type="image/svg+xml" data="graphs/graph.gv.svg" style="width: 100%; height: 95vh; border-top:1px solid black"></object>
+    <object id="svg-graph" type="image/svg+xml" data="static/graphs/graph.gv.svg" style="width: 100%; height: 95vh; border-top:1px solid black"></object>
     <script>
         document.getElementById('svg-graph').addEventListener('load', function () {
             svgPanZoom(document.getElementById('svg-graph'), {

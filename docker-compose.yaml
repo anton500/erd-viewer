@@ -5,5 +5,15 @@ services:
       context: .
     image: erd-viewer:latest
     volumes:
-      - ./data:/usr/erd-viewer/data:z
+      - ./data:/usr/erd-viewer/data:ro,z
       - ./graphs:/usr/erd-viewer/graphs:z
+    expose:
+      - 3031/tcp
+
+  nginx:
+    image: nginx:alpine
+    volumes:
+      - ./configs/nginx_uwsgi.conf:/etc/nginx/conf.d/default.conf:ro,z
+      - ./web:/usr/share/nginx/html:ro,z
+    ports:
+      - 4444:80

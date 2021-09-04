@@ -3,4 +3,4 @@ data/
 graphs/
 *.py[c]
 __pycache__/
-js/
+web/
