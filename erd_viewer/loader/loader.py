@@ -1,33 +1,18 @@
 import json
-import configparser
-from pathlib import Path
 
+from erd_viewer.loader.config import config
+from erd_viewer.loader.redis import RedisClient
 from erd_viewer.database import Database, Table, Schema, Column, Reference 
-
-class Config():
-
-    __FILENAME = 'config.ini'
-
-    def __init__(self) -> None:
-        self.config = configparser.ConfigParser()
-        self.__read_config(Path(self.__FILENAME))
-
-    def __read_config(self, config_path: Path) -> None:
-        with open(config_path) as f:
-            self.config.read(f, encoding='utf-8')
-
 
 class Loader():
 
     def __init__(self) -> None:
-        self.config = Config()
-        self.db = self.__deserialize_json(
-            self.__read_json(
-                Path(self.config.config['dbschema']['folder']) / Path(self.config.config['dbschema']['filename'])
-            )   
-        )
+        self.db = self.__deserialize_json(self.__read_json(config.get('dbschema', 'filename')))
+        self.redis = RedisClient()
+        self.__put_db_into_redis()
+        return None
 
-    def __read_json(self, json_path: Path):
+    def __read_json(self, json_path: str):
         with open(json_path) as j:
             return j.read()
 
@@ -70,3 +55,9 @@ class Loader():
                                 )
                             )
         return db
+    
+    def __put_db_into_redis(self) -> None:
+        for schema in self.db.schemas.values():
+            for table in self.db.schemas[schema.name].tables.values():
+                self.redis.r.hset(schema.name, table.name, 'test')
+        return None

@@ -27,6 +27,7 @@ class Table:
 
     def add_column(self, name: str, column: Column) -> None:
         self.columns[name] = column
+        return None
 
 @dataclass
 class Schema:
@@ -35,6 +36,7 @@ class Schema:
 
     def add_table(self, name: str, table: Table) -> None:
         self.tables[name] = table
+        return None
 
 @dataclass
 class Database:
@@ -42,3 +44,4 @@ class Database:
 
     def add_schema(self, name: str, schema: Schema) -> None:
         self.schemas[name] = schema
+        return None
