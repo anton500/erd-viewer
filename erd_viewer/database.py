@@ -11,37 +11,34 @@ class Column:
     name: str
     type: str
     null: str
-    fk_references: list[Reference] = field(default_factory=list)
-    pk_references: list[Reference] = field(default_factory=list)
+    fk_references: list[Reference]
+    pk_references: list[Reference]
 
-    def add_fk_reference(self, reference: Reference) -> None:
-        return self.fk_references.append(reference)
+    # def add_fk_reference(self, reference: Reference) -> None:
+    #     return self.fk_references.append(reference)
 
-    def add_pk_reference(self, reference: Reference) -> None:
-        return self.pk_references.append(reference)
+    # def add_pk_reference(self, reference: Reference) -> None:
+    #     return self.pk_references.append(reference)
 
 @dataclass
 class Table:
     name: str
-    columns: dict[str, Column] = field(default_factory=dict)
+    columns: list[Column]
 
-    def add_column(self, name: str, column: Column) -> None:
-        self.columns[name] = column
-        return None
+    # def add_column(self, column: Column) -> None:
+    #     return self.columns.append(column)
 
 @dataclass
 class Schema:
     name: str
-    tables: dict[str, Table] = field(default_factory=dict)
+    tables: list[Table]
 
-    def add_table(self, name: str, table: Table) -> None:
-        self.tables[name] = table
-        return None
+    # def add_table(self, table: Table) -> None:
+    #     return self.tables.append(table)
 
 @dataclass
 class Database:
-    schemas: dict[str, Schema] = field(default_factory=dict)
+    schemas: list[Schema]
 
-    def add_schema(self, name: str, schema: Schema) -> None:
-        self.schemas[name] = schema
-        return None
+    # def add_schema(self, schema: Schema) -> None:
+    #     return self.schemas.append(schema)

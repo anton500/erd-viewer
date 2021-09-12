@@ -12,4 +12,6 @@ class RedisClient():
 
     def __init__(self) -> None:
         self.r = redis.Redis(connection_pool=self.con_pool)
+        self.r.config_set('appendonly', config.get('redis-persistance', 'appendonly', fallback='no'))
+        self.r.config_set('save', config.get('redis-persistance', 'save', fallback=''))
         return None
