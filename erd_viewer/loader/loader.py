@@ -1,22 +1,15 @@
 import json
 from typing import Union
-
+from dataclasses import asdict
 
 from erd_viewer.loader.config import config
 from erd_viewer.loader.redis import RedisClient
 from erd_viewer.database import Database, Table, Schema, Column, Reference 
 
-class Loader():
+class DBJSONDecoder(json.JSONDecoder):
 
     def __init__(self) -> None:
-        self.db = self.__deserialize_json(self.__read_json(config.get('dbschema', 'filename')))
-        self.redis = RedisClient()
-        self.__put_db_into_redis()
-        return None
-
-    def __read_json(self, json_path: str) -> str:
-        with open(json_path) as j:
-            return j.read()
+        super().__init__(object_hook=self.__object_decoder)
 
     def __object_decoder(self, obj: dict) -> Union[Schema, Table, Column, Reference, dict]:
         if set(Schema.__annotations__.keys()).issubset(obj.keys()): # pylint: disable=no-member
@@ -36,12 +29,23 @@ class Loader():
         else:
             return obj
 
+class Loader():
+
+    def __init__(self) -> None:
+        self.db = self.__deserialize_json(self.__read_json(config.get('dbschema', 'filename')))
+        self.redis = RedisClient()
+        self.__put_db_into_redis()
+        return None
+
+    def __read_json(self, json_path: str) -> str:
+        with open(json_path) as j:
+            return j.read()
+
     def __deserialize_json(self, json_str: str) -> Database:
-        return Database(schemas=json.loads(json_str, object_hook=self.__object_decoder))
+        return Database(schemas=json.loads(json_str, cls=DBJSONDecoder))
     
     def __put_db_into_redis(self) -> None:
         for schema in self.db.schemas:
             for table in schema.tables:
-                self.redis.r.hset(schema.name, table.name, 'test')
+                self.redis.r.hset(schema.name, table.name, json.dumps([asdict(column) for column in table.columns]))
         return None
-
