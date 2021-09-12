@@ -5,9 +5,10 @@ from erd_viewer.loader.config import config
 class RedisClient():
 
     con_pool = redis.ConnectionPool(
-        host=config.get('redis', 'host'), 
-        port=config.getint('redis', 'port'), 
-        db=config.getint('redis', 'db')
+        host=config.get('redis', 'host'),
+        port=config.getint('redis', 'port'),
+        db=config.getint('redis', 'db'),
+        decode_responses=True
     )
 
     def __init__(self) -> None:

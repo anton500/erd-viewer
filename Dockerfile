@@ -9,7 +9,7 @@ RUN apt-get -qq update && apt-get -qq install graphviz build-essential python-de
     && rm -rf /var/lib/apt/lists/*
 
 COPY configs/uwsgi.ini .
-COPY erd-viewer/ erd-viewer/
+COPY erd_viewer/ erd_viewer/
 
 EXPOSE 3031/tcp
 

@@ -8,14 +8,16 @@
 <body style="overflow: hidden; margin: 0px;">
     <div style="width: 100%; height: 100px; margin: 10px;">
         <h1>Demo for svg-pan-zoom: SVG in HTML 'object' element</h1>
-        <input list="brow">
-        <datalist id="brow">
-            <option value="Internet Explorer">
-            <option value="Firefox">
-            <option value="Chrome">
-            <option value="Opera">
-            <option value="Safari">
-        </datalist>
+        <select name="schemas">
+            {% for schema in schemas %}
+                <option value="{{schema}}">{{schema}}</option>"
+            {% endfor %}
+          </select>
+          <select name="tables">
+            {% for table in tables %}
+                <option value="{{table}}">{{table}}</option>"
+            {% endfor %}
+          </select>
     </div>
 
     <object id="svg-graph" type="image/svg+xml" data="static/graphs/graph.gv.svg" style="width: 100%; height: 95vh; border-top:1px solid black"></object>
