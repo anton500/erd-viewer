@@ -11,8 +11,10 @@ class RedisClient():
         decode_responses=True
     )
 
-    def __init__(self) -> None:
-        self.r = redis.Redis(connection_pool=self.con_pool)
-        self.r.config_set('appendonly', config.get('redis-persistance', 'appendonly', fallback='no'))
-        self.r.config_set('save', config.get('redis-persistance', 'save', fallback=''))
-        return None
+    r = redis.Redis(connection_pool=con_pool)
+    r.config_set('appendonly', config.get('redis-persistance', 'appendonly', fallback='no'))
+    r.config_set('save', config.get('redis-persistance', 'save', fallback=''))
+    r.close
+
+    def get_client(self) -> redis.Redis:
+        return redis.Redis(connection_pool=self.con_pool)

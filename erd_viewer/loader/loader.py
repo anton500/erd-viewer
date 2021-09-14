@@ -33,7 +33,7 @@ class Loader():
 
     def __init__(self) -> None:
         self.db = self.__deserialize_json(self.__read_json(config.get('dbschema', 'filename')))
-        self.redis = RedisClient()
+        self.redis = RedisClient().get_client()
         self.__put_db_into_redis()
         return None
 
@@ -47,5 +47,5 @@ class Loader():
     def __put_db_into_redis(self) -> None:
         for schema in self.db.schemas:
             for table in schema.tables:
-                self.redis.r.hset(schema.name, table.name, json.dumps([asdict(column) for column in table.columns]))
+                self.redis.hset(schema.name, table.name, json.dumps([asdict(column) for column in table.columns]))
         return None
