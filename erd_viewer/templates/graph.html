@@ -1,83 +1,12 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link href="static/css/bootstrap.min.css" rel="stylesheet"
-    integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
-  <script type="text/javascript" src="static/js/svg-pan-zoom.min.js"></script>
-  <script type="text/javascript">
-    function gettables(opt) {
-      var xhr = new XMLHttpRequest();
-      xhr.responseType = 'json';
-      xhr.open("POST", "/get_tables", true);
-      xhr.setRequestHeader('content-type', 'application/x-www-form-urlencoded;charset=UTF-8');
-      xhr.onload = function (e) {
-        if (this.status == 200) {
-          select = document.getElementById("sel-tables")
-          select.length = 0
-
-          for (table in this.response) {
-            option = document.createElement("option");
-            option.text = this.response[table];
-            option.value = this.response[table];
-            select.appendChild(option);
-          }
-        }
-      };
-      xhr.send("schema=" + opt);
-    }
-  </script>
-</head>
-
-<body style="overflow:hidden">
-  <div class="d-flex flex-row">
-    <div class="d-flex flex-column flex-shrink-0 p-3 text-white bg-dark" style="width: 380px; height: 100vh;">
-      <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
-        <span class="fs-4">Sidebar</span>
-      </a>
-      <hr>
-      <ul class="nav nav-pills flex-column">
-        <li class="nav-item">
-          <a href="#" class="nav-link active" aria-current="page">
-            Nearest tables
-          </a>
-        </li>
-        <li>
-          <a href="#" class="nav-link text-white">
-            Find a route
-          </a>
-        </li>
-      </ul>
-      <hr>
-      <div class="d-flex flex-row">
-        <select name="schemas" onchange="gettables(this.value)">
-          {% for schema in schemas %}
-          <option value="{{schema}}">{{schema}}</option>"
-          {% endfor %}
-        </select>
-      </div>
-      <div class="d-flex flex-row">
-        <select name="tables" id='sel-tables'>
-          {% for table in tables %}
-          <option value="{{table}}">{{table}}</option>"
-          {% endfor %}
-        </select>
-      </div>
-    </div>
-    <div class="container-fluid" style="padding:0px;">
-      <object id="svg-graph" type="image/svg+xml" data="static/graphs/graph.gv.svg"
+<div class="container-fluid p-0">
+    <object id="svg-graph" type="image/svg+xml" data="static/graphs/graph.gv.svg"
         style="height:100vh; width: 100%;"></object>
-    </div>
-  </div>
-  <script>
+</div>
+<script>
     document.getElementById('svg-graph').addEventListener('load', function () {
-      svgPanZoom(document.getElementById('svg-graph'), {
-        controlIconsEnabled: true,
-        zoomScaleSensitivity: 0.5
-      });
+        svgPanZoom(document.getElementById('svg-graph'), {
+            controlIconsEnabled: true,
+            zoomScaleSensitivity: 0.5
+        });
     })
-  </script>
-</body>
-
-</html>
+</script>

@@ -9,7 +9,7 @@ def index():
     redis = RedisClient().get_client()
     schemas = sorted(redis.keys('*'), key=str.casefold)
     tables = sorted(redis.hkeys('dlfe'), key=str.casefold)
-    return render_template('graph.html', schemas=schemas, tables=tables)
+    return render_template('relatedtables.html', schemas=schemas, tables=tables)
 
 @app.route("/get_tables", methods=['POST'])
 def get_tables():

@@ -1,0 +1,27 @@
+<form method="POST">
+    <div class="mb-3">
+        <label for="schemasSelect" class="form-label">Schema</label>
+        <select class="form-select" id="schemasSelect" name="schemas" onchange="gettables(this.value)">
+            {% for schema in schemas %}
+            <option value="{{schema}}">{{schema}}</option>"
+            {% endfor %}
+        </select>
+    </div>
+    <div class="mb-3">
+        <label for="tablesSelect" class="form-label">Table</label>
+        <select class="form-select" id="tablesSelect" name="tables" id='sel-tables'>
+            {% for table in tables %}
+            <option value="{{table}}">{{table}}</option>"
+            {% endfor %}
+        </select>
+    </div>
+    <div class="mb-3">
+        <label for="depthInput" class="form-label">Depth</label>
+        <input type="number" class="form-control-sm" id="depthInput" min="1" max="5" value="1">
+    </div>
+    <div class="mb-3 form-check">
+        <input type="checkbox" class="form-check-input" id="onlykeyfieldsCheckbox">
+        <label class="form-check-label" for="onlykeyfieldsCheckbox">Show only key fields</label>
+    </div>
+    <button type="submit" class="btn btn-primary">Show</button>
+</form>
