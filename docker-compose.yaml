@@ -6,7 +6,6 @@ services:
     image: erd-viewer:latest
     volumes:
       - ./data:/usr/erd-viewer/data:ro,z
-      - ./graphs:/usr/erd-viewer/graphs:z
     expose:
       - 3031/tcp
     depends_on:
