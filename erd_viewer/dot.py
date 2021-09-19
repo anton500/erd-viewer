@@ -14,42 +14,63 @@ class Dot:
     __HTML_TABLE_BODY_TEMPLATE = '{tbody}'
     __HTML_TABLE_ROW_TEMPLATE = '<tr><td port="{port}">{name}</td><td>{datatype}</td></tr>'
 
-    def __get_html_table(self, schema_name: str, table: Table) -> str:
-        thead = self.__HTML_TABLE_HEAD_TEMPLATE.format(thead='.'.join([schema_name, table.name]))
+    __graph_attr = {'overlap': 'prism', 'splines': 'spline'}
+    __node_attr = {'shape': 'plaintext'}
+
+    def __init__(self, graph_name: str = None, engine: str = 'neato',
+                 graph_attr: dict = None, node_attr: dict = None, edge_attr: dict = None) -> None:
+        self.graph_name = graph_name
+        self.engine = engine
+
+        self.graph_attr = graph_attr if graph_attr else self.__graph_attr
+        self.node_attr = node_attr if node_attr else self.__node_attr
+        self.edge_attr = edge_attr
+
+        self.redis = RedisClient().get_client()
+        return None
+
+    def get_columns(self, schema: str, table: str) -> list:
+        json_columns = self.redis.hget(schema, table)
+        return json.loads(json_columns, cls=DBJSONDecoder)
+
+    def __get_html_table(self, schema: str, table: str, columns: list[Column], onlykeys: bool) -> str:
+        thead = self.__HTML_TABLE_HEAD_TEMPLATE.format(thead='.'.join([schema, table]))
         tbody = ''
-        for column in table.columns:
-            tbody += self.__HTML_TABLE_ROW_TEMPLATE.format(port=column.name, name=column.name, datatype=column.type)
+        for column in columns:
+            if (not onlykeys) or (onlykeys and (column.fk_references or column.pk_references)):
+                tbody += self.__HTML_TABLE_ROW_TEMPLATE.format(port=column.name, name=column.name, datatype=column.type)
 
         tbody = self.__HTML_TABLE_BODY_TEMPLATE.format(tbody=tbody)
         return self.__HTML_TABLE_TEMPLATE.format(thead=thead, tbody=tbody)
 
+    def build_digraph(self, tables: set, onlykeys: bool = False) -> Digraph:
+        digraph = Digraph(name=self.graph_name, engine=self.engine, graph_attr=self.graph_attr,
+                          node_attr=self.node_attr, edge_attr=self.edge_attr)
+
+        for schema, table in tables:
+            columns = self.get_columns(schema, table)
+            digraph.node(name=f'{schema}.{table}', label=self.__get_html_table(schema, table, columns, onlykeys))
+            for column in columns:
+                for fk_ref in column.fk_references:
+                    if (fk_ref.schema, fk_ref.table) in tables:
+                        digraph.edge(
+                            tail_name=f'{schema}.{table}:{column.name}',
+                            head_name=f'{fk_ref.schema}.{fk_ref.table}:{fk_ref.column}'
+                        )
+
+        return digraph
+
     def render_digraph(self, graph: Digraph) ->bytes:
         return graph.pipe(format='svg')
 
-    # def get_digraph(self, **kwargs) -> Digraph:
-    #     digraph = Digraph(**kwargs)
-
-    #     for schema in self.database.schemas:
-    #         for table in schema.tables:
-    #             digraph.node(
-    #                 '.'.join([schema.name, table.name]),
-    #                 label=self.__get_html_table(schema_name=schema.name, table=table)
-    #             )
-    #             for column in table.columns:
-    #                 for fk_ref in column.fk_references:
-    #                     digraph.edge(
-    #                         ':'.join(['.'.join([schema.name, table.name]), column.name]),
-    #                         ':'.join(['.'.join([fk_ref.schema, fk_ref.table]), fk_ref.column])
-    #                     )
-
-    #     return digraph
-
 class RelatedTables(Dot):
 
-    def __init__(self, schema_name: str, table_name: str, depth: int, onlykeys=bool) -> None:
-        self.redis = RedisClient().get_client()
-        self.unvisited = {(schema_name, table_name)}
-        self.tables = self.__get_related_tables(self.unvisited, depth)
+    def __init__(
+            self, schema_name: str, table_name: str, depth: int, onlykeys: bool = False, graph_name: str = None,
+            engine: str = 'neato', graph_attr: dict = None, node_attr: dict = None, edge_attr: dict = None) -> None:
+        super().__init__(graph_name, engine, graph_attr, node_attr, edge_attr)
+        self.tables = self.__get_related_tables({(schema_name, table_name)}, depth)
+        self.onlykeys = onlykeys
         return None
 
     def __get_related_tables(self, unvisited: set, depth: int, visited: set = None) -> set:
@@ -62,7 +83,7 @@ class RelatedTables(Dot):
         for schema_name, table_name in unvisited.copy():
             visited.add((schema_name, table_name))
             unvisited.remove((schema_name, table_name))
-            for column in self.__get_columns(schema_name, table_name):
+            for column in self.get_columns(schema_name, table_name):
                 for fk_ref in column.fk_references:
                     if (fk_ref.schema, fk_ref.table) not in visited:
                         unvisited.add((fk_ref.schema, fk_ref.table))
@@ -71,6 +92,6 @@ class RelatedTables(Dot):
                         unvisited.add((pk_ref.schema, pk_ref.table))
         return self.__get_related_tables(unvisited, depth-1, visited)
 
-    def __get_columns(self, schema_name: str, table_name: str) -> list:
-        json_table = self.redis.hget(schema_name, table_name)
-        return json.loads(json_table, cls=DBJSONDecoder)
+    def get_graph(self) -> bytes:
+        digraph = self.build_digraph(self.tables, self.onlykeys)
+        return self.render_digraph(digraph)
