@@ -60,8 +60,8 @@ class Dot:
 
         return digraph
 
-    def render_digraph(self, graph: Digraph) ->bytes:
-        return graph.pipe(format='svg')
+    def render_digraph(self, graph: Digraph) -> str:
+        return graph.pipe(format='svg').decode("utf-8")
 
 class RelatedTables(Dot):
 
@@ -92,6 +92,6 @@ class RelatedTables(Dot):
                         unvisited.add((pk_ref.schema, pk_ref.table))
         return self.__get_related_tables(unvisited, depth-1, visited)
 
-    def get_graph(self) -> bytes:
+    def get_graph(self) -> str:
         digraph = self.build_digraph(self.tables, self.onlykeys)
         return self.render_digraph(digraph)

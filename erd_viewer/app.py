@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, Markup
 
 from erd_viewer.loader.redis import RedisClient
 from erd_viewer.dot import RelatedTables
@@ -31,7 +31,7 @@ def render_related_tables():
 
     svg = RelatedTables(schema, table, depth, onlykeys).get_graph()
 
-    return str(svg)
+    return Markup(svg)
 
 
 if __name__ == "__main__":

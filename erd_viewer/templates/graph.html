@@ -1,12 +1,1 @@
-<div class="container-fluid p-0">
-    <object id="svg-graph" type="image/svg+xml" data="static/graphs/graph.gv.svg"
-        style="height:100vh; width: 100%;"></object>
-</div>
-<script>
-    document.getElementById('svg-graph').addEventListener('load', function () {
-        svgPanZoom(document.getElementById('svg-graph'), {
-            controlIconsEnabled: true,
-            zoomScaleSensitivity: 0.5
-        });
-    })
-</script>
+<div class="container-fluid p-0" id="svgcontainer"></div>
