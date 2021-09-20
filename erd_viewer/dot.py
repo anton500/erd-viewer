@@ -87,7 +87,7 @@ class RelatedTables(Dot):
                 for fk_ref in column.fk_references:
                     if (fk_ref.schema, fk_ref.table) not in visited:
                         unvisited.add((fk_ref.schema, fk_ref.table))
-                for pk_ref in column.fk_references:
+                for pk_ref in column.pk_references:
                     if (pk_ref.schema, pk_ref.table) not in visited:
                         unvisited.add((pk_ref.schema, pk_ref.table))
         return self.__get_related_tables(unvisited, depth-1, visited)
