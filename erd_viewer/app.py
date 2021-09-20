@@ -27,7 +27,7 @@ def render_related_tables():
     schema = request.form.get('schema')
     table = request.form.get('table')
     depth = int(request.form.get('depth'))
-    onlykeys = request.form.get('onlykeys')
+    onlykeys = int(request.form.get('onlykeys'))
 
     svg = RelatedTables(schema, table, depth, onlykeys).get_graph()
 

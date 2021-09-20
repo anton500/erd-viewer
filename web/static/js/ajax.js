@@ -48,7 +48,7 @@ function submitform_relatedtables(form) {
     var schema = form.schemas.value;
     var table = form.tables.value;
     var depth = form.depth.value;
-    var onlykeys = form.onlykeys.value;
+    var onlykeys = form.onlykeys.checked ? 1 : 0;
 
     xhr.send(
         "schema=" +
