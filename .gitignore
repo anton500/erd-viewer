@@ -1,6 +1,6 @@
 .*/
 data/
-graphs/
 *.py[c]
 __pycache__/
-web/
+bootstrap*[.css,.map]
+svg-pan-zoom.min.js
