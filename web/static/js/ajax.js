@@ -4,7 +4,7 @@ function gettables(opt) {
     xhr.open("POST", "/get_tables", true);
     xhr.setRequestHeader(
         "content-type",
-        "application/x-www-form-urlencoded;charset=UTF-8"
+        "application/x-www-form-urlencoded;charset=utf-8"
     );
     xhr.onload = function () {
         if (this.status == 200) {
@@ -60,7 +60,7 @@ function submitform_relatedtables(form) {
     xhr.open("POST", "/render_relatedtables", true);
     xhr.setRequestHeader(
         "content-type",
-        "application/x-www-form-urlencoded;charset=UTF-8"
+        "application/x-www-form-urlencoded;;charset=utf-8"
     );
     xhr.onload = function () {
         if (this.status == 200) {
@@ -77,16 +77,6 @@ function submitform_relatedtables(form) {
     var onlykeys = form.onlykeys.checked ? 1 : 0;
 
     xhr.send(
-        "schema=" +
-            schema +
-            "&" +
-            "table=" +
-            table +
-            "&" +
-            "depth=" +
-            depth +
-            "&" +
-            "onlykeys=" +
-            onlykeys
+        "schema=" + schema + "&" + "table=" + table + "&" + "depth=" + depth + "&" + "onlykeys=" + onlykeys
     );
 }
