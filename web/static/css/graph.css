@@ -1,8 +1,0 @@
-#svgcontainer {
-    height: 100vh;
-}
-
-#svgcontainer svg {
-    height: 100%;
-    width: 100%;
-}

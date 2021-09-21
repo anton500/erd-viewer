@@ -32,7 +32,30 @@ function insert_graph(svg) {
     });
 }
 
+function loading() {
+    var svgdiv = document.getElementById("svgcontainer");
+    svgdiv.innerHTML = `
+        <div class="d-flex vh-100 justify-content-center">
+            <div class="spinner-border align-self-center" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+        </div>`;
+
+    var submitbutton = document.getElementById("btnSubmit");
+    submitbutton.disabled = true;
+    submitbutton.innerHTML = `
+        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+            Loading...`;
+}
+
+function releasebtn() {
+    var submitbutton = document.getElementById("btnSubmit");
+    submitbutton.disabled = false;
+    submitbutton.innerHTML = "Show";
+}
+
 function submitform_relatedtables(form) {
+    loading();
     var xhr = new XMLHttpRequest();
     xhr.open("POST", "/render_relatedtables", true);
     xhr.setRequestHeader(
@@ -42,7 +65,10 @@ function submitform_relatedtables(form) {
     xhr.onload = function () {
         if (this.status == 200) {
             insert_graph(this.response);
+        } else {
+            document.getElementById("svgcontainer").innerHTML = ""
         }
+        releasebtn();
     };
 
     var schema = form.schemas.value;
