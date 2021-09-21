@@ -43,7 +43,10 @@ class Dot:
         tbody = self.__HTML_TABLE_BODY_TEMPLATE.format(tbody=tbody)
         return self.__HTML_TABLE_TEMPLATE.format(thead=thead, tbody=tbody)
 
-    def build_digraph(self, tables: set, onlykeys: bool = False) -> Digraph:
+    def build_digraph(self, tables: set, onlykeys: bool = False, unvisited_tables: set = None) -> Digraph:
+        if unvisited_tables is None:
+            unvisited_tables = set()
+
         digraph = Digraph(name=self.graph_name, engine=self.engine, graph_attr=self.graph_attr,
                           node_attr=self.node_attr, edge_attr=self.edge_attr)
 
@@ -51,12 +54,20 @@ class Dot:
             columns = self.get_columns(schema, table)
             digraph.node(name=f'{schema}.{table}', label=self.__get_html_table(schema, table, columns, onlykeys))
             for column in columns:
-                for fk_ref in column.fk_references:
-                    if (fk_ref.schema, fk_ref.table) in tables:
-                        digraph.edge(
-                            tail_name=f'{schema}.{table}:{column.name}',
-                            head_name=f'{fk_ref.schema}.{fk_ref.table}:{fk_ref.column}'
-                        )
+                if (schema, table) not in unvisited_tables:
+                    for fk_ref in column.fk_references:
+                        if (fk_ref.schema, fk_ref.table) in tables:
+                            digraph.edge(
+                                tail_name=f'{schema}.{table}:{column.name}',
+                                head_name=f'{fk_ref.schema}.{fk_ref.table}:{fk_ref.column}'
+                            )
+                else:
+                    for fk_ref in column.fk_references:
+                        if (fk_ref.schema, fk_ref.table) in tables.difference(unvisited_tables):
+                            digraph.edge(
+                                tail_name=f'{schema}.{table}:{column.name}',
+                                head_name=f'{fk_ref.schema}.{fk_ref.table}:{fk_ref.column}'
+                            )
 
         return digraph
 
@@ -69,16 +80,16 @@ class RelatedTables(Dot):
             self, schema_name: str, table_name: str, depth: int, onlykeys: bool = False, graph_name: str = None,
             engine: str = 'neato', graph_attr: dict = None, node_attr: dict = None, edge_attr: dict = None) -> None:
         super().__init__(graph_name, engine, graph_attr, node_attr, edge_attr)
-        self.tables = self.__get_related_tables({(schema_name, table_name)}, depth)
+        self.tables, self.unvisited_tables = self.__get_related_tables({(schema_name, table_name)}, depth)
         self.onlykeys = onlykeys
         return None
 
-    def __get_related_tables(self, unvisited: set, depth: int, visited: set = None) -> set:
+    def __get_related_tables(self, unvisited: set, depth: int, visited: set = None) -> tuple[set, set]:
         if visited is None:
             visited = set()
 
         if depth == 0:
-            return visited.union(unvisited)
+            return visited.union(unvisited), unvisited
 
         for schema_name, table_name in unvisited.copy():
             visited.add((schema_name, table_name))
@@ -93,5 +104,5 @@ class RelatedTables(Dot):
         return self.__get_related_tables(unvisited, depth-1, visited)
 
     def get_graph(self) -> str:
-        digraph = self.build_digraph(self.tables, self.onlykeys)
+        digraph = self.build_digraph(self.tables, self.onlykeys, self.unvisited_tables)
         return self.render_digraph(digraph)
