@@ -2,5 +2,3 @@
 data/
 *.py[c]
 __pycache__/
-bootstrap*
-svg-pan-zoom.min.js

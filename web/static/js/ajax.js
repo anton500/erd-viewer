@@ -1,82 +1,81 @@
-function gettables(opt) {
-    var xhr = new XMLHttpRequest();
-    xhr.responseType = "json";
-    xhr.open("POST", "/get_tables", true);
-    xhr.setRequestHeader(
-        "content-type",
-        "application/x-www-form-urlencoded;charset=utf-8"
-    );
-    xhr.onload = function () {
-        if (this.status == 200) {
-            select = document.getElementById("tablesSelect");
-            select.length = 0;
+function getTables(opt) {
+  var xhr = new XMLHttpRequest();
+  xhr.responseType = "json";
+  xhr.open("post", "/get_tables", true);
+  xhr.setRequestHeader(
+    "content-type",
+    "application/x-www-form-urlencoded; charset=utf-8"
+  );
+  xhr.onload = function () {
+    if (this.status == 200) {
+      var select = document.getElementById("select-tables");
+      select.length = 0;
 
-            for (table in this.response) {
-                option = document.createElement("option");
-                option.text = this.response[table];
-                option.value = this.response[table];
-                select.appendChild(option);
-            }
-        }
-    };
-    xhr.send("schema=" + opt);
+      for (const table in this.response) {
+        let option = document.createElement("option");
+        option.text = this.response[table];
+        option.value = this.response[table];
+        select.appendChild(option);
+      }
+    }
+  };
+  xhr.send("schema=" + opt);
 }
 
-function insert_graph(svg) {
-    var div = document.getElementById("svgcontainer");
-    div.innerHTML = svg;
-    var svgObject = div.getElementsByTagName("svg")[0];
-    svgPanZoom(svgObject, {
-        controlIconsEnabled: true,
-        zoomScaleSensitivity: 0.5,
-    });
+function insertGraph(svg) {
+  var svgDiv = document.getElementById("svg-container");
+  svgDiv.innerHTML = svg;
+  var svgObject = svgDiv.getElementsByTagName("svg")[0];
+  svgPanZoom(svgObject, {
+    controlIconsEnabled: true,
+    zoomScaleSensitivity: 0.5,
+  });
 }
 
 function loading() {
-    var svgdiv = document.getElementById("svgcontainer");
-    svgdiv.innerHTML = `
+  var svgDiv = document.getElementById("svg-container");
+  svgDiv.innerHTML = `
         <div class="d-flex vh-100 justify-content-center">
             <div class="spinner-border align-self-center" role="status">
                 <span class="visually-hidden">Loading...</span>
             </div>
         </div>`;
-
-    var submitbutton = document.getElementById("btnSubmit");
-    submitbutton.disabled = true;
-    submitbutton.innerHTML = `
+  var submitButton = document.getElementById("button-submit");
+  submitButton.disabled = true;
+  submitButton.innerHTML = `
         <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
             Loading...`;
 }
 
-function releasebtn() {
-    var submitbutton = document.getElementById("btnSubmit");
-    submitbutton.disabled = false;
-    submitbutton.innerHTML = "Show";
+function releaseButton() {
+  var submitButton = document.getElementById("button-submit");
+  submitButton.disabled = false;
+  submitButton.innerHTML = "Show";
 }
 
-function submitform_relatedtables(form) {
-    loading();
-    var xhr = new XMLHttpRequest();
-    xhr.open("POST", "/render_relatedtables", true);
-    xhr.setRequestHeader(
-        "content-type",
-        "application/x-www-form-urlencoded;;charset=utf-8"
-    );
-    xhr.onload = function () {
-        if (this.status == 200) {
-            insert_graph(this.response);
-        } else {
-            document.getElementById("svgcontainer").innerHTML = ""
-        }
-        releasebtn();
-    };
+function submitFormRelatedTables(form) {
+  loading();
+  var xhr = new XMLHttpRequest();
+  xhr.open("post", "/render_relatedtables", true);
+  xhr.setRequestHeader(
+    "content-type",
+    "application/x-www-form-urlencoded; charset=utf-8"
+  );
+  xhr.onload = function () {
+    if (this.status == 200) {
+      insertGraph(this.response);
+    } else {
+      document.getElementById("svg-container").innerHTML = ""
+    }
+    releaseButton();
+  };
 
-    var schema = form.schemas.value;
-    var table = form.tables.value;
-    var depth = form.depth.value;
-    var onlykeys = form.onlykeys.checked ? 1 : 0;
+  const schema = form.schemas.value;
+  const table = form.tables.value;
+  const depth = form.depth.value;
+  const onlykeys = form.onlykeys.checked ? 1 : 0;
 
-    xhr.send(
-        "schema=" + schema + "&" + "table=" + table + "&" + "depth=" + depth + "&" + "onlykeys=" + onlykeys
-    );
+  xhr.send(
+    "schema=" + schema + "&" + "table=" + table + "&" + "depth=" + depth + "&" + "onlykeys=" + onlykeys
+  );
 }

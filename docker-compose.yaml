@@ -1,4 +1,4 @@
-version: "3.9"
+version: "3.7"
 services:
   erd-viewer:
     build:
@@ -20,7 +20,7 @@ services:
       - 4444:80/tcp
     depends_on:
       - erd-viewer
-  
+
   redis:
     image: redis:alpine
     expose:
