@@ -73,9 +73,9 @@ function submitFormRelatedTables(form) {
   const schema = form.schemas.value;
   const table = form.tables.value;
   const depth = form.depth.value;
-  const onlykeys = form.onlykeys.checked ? 1 : 0;
+  const onlyrefs = form.onlyrefs.checked ? 1 : 0;
 
   xhr.send(
-    "schema=" + schema + "&" + "table=" + table + "&" + "depth=" + depth + "&" + "onlykeys=" + onlykeys
+    "schema=" + schema + "&" + "table=" + table + "&" + "depth=" + depth + "&" + "onlyrefs=" + onlyrefs
   );
 }
