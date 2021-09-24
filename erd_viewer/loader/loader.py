@@ -46,6 +46,7 @@ class Loader():
 
     def __put_db_into_redis(self) -> None:
         for schema in self.db.schemas:
+            self.redis.rpush('schemas:list', schema.name)
             for table in schema.tables:
                 self.redis.hset(schema.name, table.name, json.dumps([asdict(column) for column in table.columns]))
         return None

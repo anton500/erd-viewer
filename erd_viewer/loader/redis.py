@@ -7,8 +7,7 @@ class RedisClient():
     con_pool = redis.ConnectionPool(
         host=config.get('redis', 'host'),
         port=config.getint('redis', 'port'),
-        db=config.getint('redis', 'db'),
-        decode_responses=True
+        db=config.getint('redis', 'db')
     )
 
     r = redis.Redis(connection_pool=con_pool)

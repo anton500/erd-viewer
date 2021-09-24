@@ -1,4 +1,5 @@
 import json
+import gzip
 
 from graphviz import Digraph
 
@@ -30,8 +31,8 @@ class Graph:
 
     def get_columns(self, schema: str, table: str) -> list:
         json_columns = self.redis.hget(schema, table)
-        if isinstance(json_columns, str):
-            return json.loads(json_columns, cls=DBJSONDecoder)
+        if isinstance(json_columns, bytes):
+            return json.loads(json_columns.decode('utf-8'), cls=DBJSONDecoder)
         return []
 
     def __get_html_table(self, schema: str, table: str, columns: list[Column]) -> str:
@@ -97,8 +98,8 @@ class Graph:
 
         return self.__fill_digraph(digraph, tables_with_columns, refs)
 
-    def render_digraph(self, graph: Digraph) -> str:
-        return graph.pipe(format='svg').decode('utf-8')
+    def render_digraph(self, graph: Digraph) -> bytes:
+        return gzip.compress(graph.pipe(format='svg'), compresslevel=9)
 
 class RelatedTables(Graph):
 
@@ -130,6 +131,6 @@ class RelatedTables(Graph):
                         unvisited.add((pk_ref.schema, pk_ref.table))
         return self.__get_related_tables(unvisited, depth-1, visited)
 
-    def get_graph(self) -> str:
+    def get_graph(self) -> bytes:
         digraph = self.build_digraph(self.tables, self.onlyrefs, self.unvisited_tables)
         return self.render_digraph(digraph)
