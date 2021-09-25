@@ -1,0 +1,7 @@
+<ul class="nav nav-pills flex-column fs-5">
+  {% for i in nav %}
+  <li class="nav-item">
+    <a href="{{i['url']}}" class="nav-link {% if i['url'] == url %}active" aria-current="page"{% else %}text-white"{% endif %}>{{i['title']}}</a>
+  </li>
+  {% endfor %}
+</ul>

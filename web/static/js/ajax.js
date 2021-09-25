@@ -53,14 +53,10 @@ function releaseButton() {
   submitButton.innerHTML = "Show";
 }
 
-function submitFormRelatedTables(form) {
+function submitForm(form, url) {
   loading();
   var xhr = new XMLHttpRequest();
-  xhr.open("post", "/render_relatedtables", true);
-  xhr.setRequestHeader(
-    "content-type",
-    "application/x-www-form-urlencoded; charset=utf-8"
-  );
+  xhr.open("post", url, true);
   xhr.onload = function () {
     if (this.status == 200) {
       insertGraph(this.response);
@@ -70,12 +66,7 @@ function submitFormRelatedTables(form) {
     releaseButton();
   };
 
-  const schema = form.schemas.value;
-  const table = form.tables.value;
-  const depth = form.depth.value;
-  const onlyrefs = form.onlyrefs.checked ? 1 : 0;
-
-  xhr.send(
-    "schema=" + schema + "&" + "table=" + table + "&" + "depth=" + depth + "&" + "onlyrefs=" + onlyrefs
-  );
+  formData = new FormData(form)
+  formData.append("onlyrefs", form.onlyrefs.checked ? 1 : 0)
+  xhr.send(formData);
 }

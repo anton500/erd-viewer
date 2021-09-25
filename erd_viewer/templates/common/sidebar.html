@@ -1,0 +1,12 @@
+{% extends 'common/base.html' %}
+{% block sidebar %}
+<div class="d-flex flex-column flex-shrink-0 p-3 text-white bg-dark vh-100" id="sidebar">
+  {% include 'common/title.html' %}
+  <hr>
+  {% include 'common/navigation.html' %}
+  <hr>
+  {% block form %}{% endblock form %}
+  <hr>
+  {% include 'common/footer.html' %}
+</div>
+{% endblock sidebar %}

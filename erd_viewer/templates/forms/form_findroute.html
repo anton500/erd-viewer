@@ -1,0 +1,39 @@
+<form class="flex-column mb-auto" method="post" onsubmit="submitForm(this, '/render_findroute');return false">
+  <div class="mb-3">
+    <label for="select-schemas" class="form-label">Starting schema</label>
+    <select class="form-select" id="select-schemas" name="start-schemas" onchange="getTables(this.value)">
+      {% for schema in schemas %}
+      <option value="{{schema}}">{{schema}}</option>"
+      {% endfor %}
+    </select>
+  </div>
+  <div class="mb-3">
+    <label for="select-tables" class="form-label">Starting table</label>
+    <select class="form-select" id="select-tables" name="start-tables">
+      {% for table in tables %}
+      <option value="{{table}}">{{table}}</option>"
+      {% endfor %}
+    </select>
+  </div>
+  <div class="mb-3">
+    <label for="select-schemas-dest" class="form-label">Destination schema</label>
+    <select class="form-select" id="select-schemas-dest" name="dest-schemas">
+      {% for schema in schemas %}
+      <option value="{{schema}}">{{schema}}</option>"
+      {% endfor %}
+    </select>
+  </div>
+  <div class="mb-3">
+    <label for="select-tables-dest" class="form-label">Destination table</label>
+    <select class="form-select" id="select-tables-dest" name="dest-tables">
+      {% for table in tables %}
+      <option value="{{table}}">{{table}}</option>"
+      {% endfor %}
+    </select>
+  </div>
+  <div class="mb-3 form-check">
+    <input type="checkbox" class="form-check-input" id="checkbox-onlyrefs" name="onlyrefs">
+    <label class="form-check-label" for="checkbox-onlyrefs">Show only related fields</label>
+  </div>
+  <button type="submit" class="btn btn-primary" id="button-submit">Show</button>
+</form>
