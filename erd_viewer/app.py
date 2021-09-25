@@ -3,7 +3,8 @@ from hashlib import md5
 from flask import Flask, render_template, request, jsonify, make_response, Response
 
 from erd_viewer.loader.redis import RedisClient
-from erd_viewer.graph import RelatedTables
+from erd_viewer.graph import RelatedTables, FindRoute
+from erd_viewer.database import SchemaTable
 
 app = Flask(__name__)
 
@@ -69,16 +70,24 @@ def get_tables():
 def render_findroute():
     redis = RedisClient().get_client()
 
-    schema = request.form.get('schema')
-    table = request.form.get('table')
-    depth = int(request.form.get('depth'))
+    start_schema = request.form.get('start-schemas')
+    start_table = request.form.get('start-tables')
+    dest_schema = request.form.get('dest-schemas')
+    dest_table = request.form.get('dest-tables')
     onlyrefs = bool(int(request.form.get('onlyrefs')))
+    shortest = bool(int(request.form.get('shortest')))
 
-    params_hash = get_hash(schema, table, str(depth), str(onlyrefs))
+    params_hash = get_hash('findroute', start_schema, start_table, dest_schema,
+                           dest_table, str(onlyrefs), str(shortest))
     svg = redis.hget('cached:svg', params_hash)
 
     if svg is None:
-        svg = RelatedTables(schema, table, depth, onlyrefs).get_graph()
+        svg = FindRoute(
+            SchemaTable(start_schema, start_table),
+            SchemaTable(dest_schema, dest_table),
+            onlyrefs,
+            shortest
+        ).get_graph()
         redis.hset('cached:svg', params_hash, svg)
 
     return response_svg(svg)
@@ -92,11 +101,11 @@ def render_related_tables():
     depth = int(request.form.get('depth'))
     onlyrefs = bool(int(request.form.get('onlyrefs')))
 
-    params_hash = get_hash(schema, table, str(depth), str(onlyrefs))
+    params_hash = get_hash('relatedtables', schema, table, str(depth), str(onlyrefs))
     svg = redis.hget('cached:svg', params_hash)
 
     if svg is None:
-        svg = RelatedTables(schema, table, depth, onlyrefs).get_graph()
+        svg = RelatedTables(SchemaTable(schema, table), depth, onlyrefs).get_graph()
         redis.hset('cached:svg', params_hash, svg)
 
     return response_svg(svg)

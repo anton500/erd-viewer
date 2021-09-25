@@ -1,7 +1,12 @@
 from dataclasses import dataclass
 
 @dataclass(frozen=True)
-class ColumnWithPath:
+class SchemaTable:
+    schema: str
+    table: str
+
+@dataclass(frozen=True)
+class SchemaTableColumn:
     schema: str
     table: str
     column: str
@@ -11,8 +16,8 @@ class Column:
     name: str
     type: str
     null: str
-    fk_references: list[ColumnWithPath]
-    pk_references: list[ColumnWithPath]
+    fk_references: list[SchemaTableColumn]
+    pk_references: list[SchemaTableColumn]
 
 @dataclass
 class Table:

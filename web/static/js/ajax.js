@@ -67,6 +67,12 @@ function submitForm(form, url) {
   };
 
   formData = new FormData(form)
-  formData.append("onlyrefs", form.onlyrefs.checked ? 1 : 0)
+  if (form.onlyrefs != null) {
+    formData.set("onlyrefs", form.onlyrefs.checked ? 1 : 0)
+  }
+  if (form.shortest != null) {
+    formData.set("shortest", form.shortest.checked ? 1 : 0)
+  }
+
   xhr.send(formData);
 }
