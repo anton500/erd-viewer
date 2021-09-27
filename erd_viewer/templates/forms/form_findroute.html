@@ -1,7 +1,7 @@
 <form class="flex-column mb-auto" method="post" onsubmit="submitForm(this, '/render_findroute');return false">
   <div class="mb-3">
     <label for="select-schemas" class="form-label">Starting schema</label>
-    <select class="form-select" id="select-schemas" name="start-schemas" onchange="getTables(this.value)">
+    <select class="form-select" id="select-schemas" name="start-schemas" onchange="getTables(this.value, 'select-tables')">
       {% for schema in schemas %}
       <option value="{{schema}}">{{schema}}</option>"
       {% endfor %}
@@ -17,7 +17,7 @@
   </div>
   <div class="mb-3">
     <label for="select-schemas-dest" class="form-label">Destination schema</label>
-    <select class="form-select" id="select-schemas-dest" name="dest-schemas">
+    <select class="form-select" id="select-schemas-dest" name="dest-schemas" onchange="getTables(this.value, 'select-tables-dest')">
       {% for schema in schemas %}
       <option value="{{schema}}">{{schema}}</option>"
       {% endfor %}

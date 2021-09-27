@@ -1,6 +1,5 @@
 import json
 import gzip
-from typing import Union
 
 from graphviz import Digraph
 
@@ -71,6 +70,28 @@ class Graph:
                             )
         return refs
 
+    def _generate_path_refs(self, tables_with_columns: dict[SchemaTable, list[Column]],
+                            paths: list[list[SchemaTable]]) -> list[tuple[SchemaTableColumn, SchemaTableColumn]]:
+
+        refs = []
+
+        for path in paths:
+            while path:
+                schema_table = path.pop()
+                if not path:
+                    continue
+                next_schema_table = path[0]
+                for column in tables_with_columns[schema_table]:
+                    for ref in column.fk_references + column.pk_references:
+                        ref_schema_table = SchemaTable(ref.schema, ref.table)
+                        if ref_schema_table == next_schema_table:
+                            refs.append(
+                                (SchemaTableColumn(schema_table.schema, schema_table.table, column.name),
+                                ref)
+                            )
+
+        return refs
+
     def __fill_digraph(self, digraph: Digraph, tables_with_columns: dict[SchemaTable, list[Column]],
                      refs: list[tuple[SchemaTableColumn, SchemaTableColumn]]) -> Digraph:
 
@@ -89,13 +110,16 @@ class Graph:
         return digraph
 
     def build_digraph(self, tables: set[SchemaTable], onlyrefs: bool = False,
-                      unvisited_tables: set[SchemaTable] = None) -> Digraph:
+                      unvisited_tables: set[SchemaTable] = None, paths: list[list[SchemaTable]] = None) -> Digraph:
         digraph = Digraph(name=self.graph_name, engine=self.engine, graph_attr=self.graph_attr,
                           node_attr=self.node_attr, edge_attr=self.edge_attr)
 
         tables_with_columns = {schema_table: self.get_columns(schema_table) for schema_table in tables}
 
-        refs = self.__generate_refs(tables_with_columns, unvisited_tables)
+        if paths is None:
+            refs = self.__generate_refs(tables_with_columns, unvisited_tables)
+        else:
+            refs = self._generate_path_refs(tables_with_columns, unvisited_tables)
 
         if onlyrefs:
             unique_columns = {stc for t in refs for stc in t}
@@ -153,12 +177,13 @@ class FindRoute(Graph):
             shortest: bool = False, graph_name: str = None, engine: str = 'neato', graph_attr: dict = None,
             node_attr: dict = None, edge_attr: dict = None) -> None:
         super().__init__(graph_name, engine, graph_attr, node_attr, edge_attr)
-        self.paths = self.__get_all_paths(start_schema_table, dest_schema_table, shortest)
-
+        self.paths = self.__get_paths(start_schema_table, dest_schema_table, shortest)
+        self.tables = {table for path in self.paths for table in path}
+        self.onlyrefs = onlyrefs
         return None
 
-    def __get_all_paths(self, start_schema_table: SchemaTable, dest_schema_table: SchemaTable,
-                        shortest: bool) -> Union[list[SchemaTable], list[list[SchemaTable]]]:
+    def __get_paths(self, start_schema_table: SchemaTable, dest_schema_table: SchemaTable,
+                    shortest: bool) -> list[list[SchemaTable]]:
         unvisited = set()
         unvisited.add(start_schema_table)
         visited = set()
@@ -176,42 +201,33 @@ class FindRoute(Graph):
 
                     if fk_schema_table == dest_schema_table:
                         if shortest:
-                            return path.get(schema_table, []) + [schema_table] + [fk_schema_table]
-                        valid_paths.append(
-                            path.get(schema_table, [])
-                            + [SchemaTableColumn(schema_table.schema, schema_table.table, column.name)]
-                            + [SchemaTableColumn(fk_schema_table.schema, fk_schema_table.table, fk_ref.column)]
-                        )
+                            return [path.get(schema_table, []) + [schema_table] + [fk_schema_table]]
+                        valid_paths.append(path.get(schema_table, []) + [schema_table] + [fk_schema_table])
 
                     if fk_schema_table not in visited.union(unvisited):
                         unvisited.add(fk_schema_table)
                         path.setdefault(
                             fk_schema_table,
                             path.get(schema_table, []).copy()
-                        ).append(SchemaTableColumn(schema_table.schema, schema_table.table, column.name))
+                        ).append(schema_table)
 
                 for pk_ref in column.pk_references:
                     pk_schema_table = SchemaTable(pk_ref.schema, pk_ref.table)
 
                     if pk_schema_table == dest_schema_table:
                         if shortest:
-                            return path.get(schema_table, []) + [schema_table] + [pk_schema_table]
-                        valid_paths.append(
-                            path.get(schema_table, [])
-                            + [SchemaTableColumn(schema_table.schema, schema_table.table, column.name)]
-                            + [SchemaTableColumn(pk_schema_table.schema, pk_schema_table.table, pk_ref.column)]
-                        )
+                            return [path.get(schema_table, []) + [schema_table] + [pk_schema_table]]
+                        valid_paths.append(path.get(schema_table, []) + [schema_table] + [pk_schema_table])
 
                     if pk_schema_table not in visited.union(unvisited):
                         unvisited.add(pk_schema_table)
                         path.setdefault(
                             pk_schema_table,
                             path.get(schema_table, []).copy()
-                        ).append(SchemaTableColumn(schema_table.schema, schema_table.table, column.name))
+                        ).append(schema_table)
 
         return valid_paths
 
     def get_graph(self) -> bytes:
-        #digraph = self.build_digraph(self.tables, self.onlyrefs, self.unvisited_tables)
-        #return self.render_digraph(digraph)
-        return bytes()
+        digraph = self.build_digraph(self.tables, self.onlyrefs, self.paths)
+        return self.render_digraph(digraph)

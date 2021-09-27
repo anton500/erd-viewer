@@ -1,4 +1,4 @@
-function getTables(opt) {
+function getTables(opt, tablesSelectorId) {
   var xhr = new XMLHttpRequest();
   xhr.responseType = "json";
   xhr.open("post", "/get_tables", true);
@@ -8,7 +8,7 @@ function getTables(opt) {
   );
   xhr.onload = function () {
     if (this.status == 200) {
-      var select = document.getElementById("select-tables");
+      var select = document.getElementById(tablesSelectorId);
       select.length = 0;
 
       for (const table in this.response) {
