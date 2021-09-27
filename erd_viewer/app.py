@@ -74,19 +74,33 @@ def render_findroute():
     start_table = request.form.get('start-tables')
     dest_schema = request.form.get('dest-schemas')
     dest_table = request.form.get('dest-tables')
+    exclude = request.form.get('exclude')
+    tables_to_exclude = [SchemaTable(exclude.split('.')[0], exclude.split('.')[1])] if exclude else []
+
     onlyrefs = bool(int(request.form.get('onlyrefs')))
     shortest = bool(int(request.form.get('shortest')))
 
-    params_hash = get_hash('findroute', start_schema, start_table, dest_schema,
-                           dest_table, str(onlyrefs), str(shortest))
+    args_for_hash = (
+        'findroute',
+        start_schema,
+        start_table,
+        dest_schema,
+        dest_table,
+        exclude,
+        str(onlyrefs),
+        str(shortest),
+    )
+
+    params_hash = get_hash(*args_for_hash)
     svg = redis.hget('cached:svg', params_hash)
 
     if svg is None:
         svg = FindRoute(
             SchemaTable(start_schema, start_table),
             SchemaTable(dest_schema, dest_table),
+            tables_to_exclude,
             onlyrefs,
-            shortest
+            shortest,
         ).get_graph()
         redis.hset('cached:svg', params_hash, svg)
 
@@ -98,17 +112,29 @@ def render_related_tables():
 
     schema = request.form.get('schemas')
     table = request.form.get('tables')
+    exclude = request.form.get('exclude')
+    tables_to_exclude = [SchemaTable(exclude.split('.')[0], exclude.split('.')[1])] if exclude else []
     depth = int(request.form.get('depth'))
     onlyrefs = bool(int(request.form.get('onlyrefs')))
 
-    params_hash = get_hash('relatedtables', schema, table, str(depth), str(onlyrefs))
+    args_for_hash = (
+        'relatedtables',
+        schema,
+        table,
+        exclude,
+        str(onlyrefs),
+    )
+
+    params_hash = get_hash(*args_for_hash)
     svg = redis.hget('cached:svg', params_hash)
 
     if svg is None:
-        svg = RelatedTables(SchemaTable(schema, table), depth, onlyrefs).get_graph()
+        svg = RelatedTables(
+            SchemaTable(schema, table),
+            depth,
+            tables_to_exclude,
+            onlyrefs
+        ).get_graph()
         redis.hset('cached:svg', params_hash, svg)
 
     return response_svg(svg)
-
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=4444, debug=True)

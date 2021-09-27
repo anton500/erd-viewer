@@ -16,11 +16,15 @@
     </select>
   </div>
   <div class="mb-3">
+    <label for="input-exclude" class="form-label">Exclude table</label>
+    <input type="text" class="form-control-sm" id="input-exclude" name="exclude" />
+  </div>
+  <div class="mb-3">
     <label for="input-depth" class="form-label">Depth</label>
     <input type="number" class="form-control-sm" id="input-depth" name="depth" min="0" max="5" value="1">
   </div>
   <div class="mb-3 form-check">
-    <input type="checkbox" class="form-check-input" id="checkbox-onlyrefs" name="onlyrefs">
+    <input type="checkbox" class="form-check-input" id="checkbox-onlyrefs" name="onlyrefs" />
     <label class="form-check-label" for="checkbox-onlyrefs">Show only related fields</label>
   </div>
   <button type="submit" class="btn btn-primary" id="button-submit">Show</button>

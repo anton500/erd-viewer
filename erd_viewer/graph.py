@@ -139,14 +139,14 @@ class Graph:
 class RelatedTables(Graph):
 
     def __init__(
-            self, schema_table: SchemaTable, depth: int, onlyrefs: bool = False, graph_name: str = None,
-            engine: str = 'neato', graph_attr: dict = None, node_attr: dict = None, edge_attr: dict = None) -> None:
+            self, schema_table: SchemaTable, depth: int, tables_to_exclude: list[SchemaTable], onlyrefs: bool = False,
+            graph_name: str = None, engine: str = 'neato', graph_attr: dict = None, node_attr: dict = None, edge_attr: dict = None) -> None:
         super().__init__(graph_name, engine, graph_attr, node_attr, edge_attr)
-        self.tables, self.unvisited_tables = self.__get_related_tables({schema_table}, depth)
+        self.tables, self.unvisited_tables = self.__get_related_tables({schema_table}, depth, tables_to_exclude)
         self.onlyrefs = onlyrefs
         return None
 
-    def __get_related_tables(self, unvisited: set[SchemaTable], depth: int,
+    def __get_related_tables(self, unvisited: set[SchemaTable], depth: int, tables_to_exclude: list[SchemaTable],
                              visited: set[SchemaTable] = None) -> tuple[set, set]:
         if visited is None:
             visited = set()
@@ -158,13 +158,12 @@ class RelatedTables(Graph):
             visited.add(schema_table)
             unvisited.remove(schema_table)
             for column in self.get_columns(schema_table):
-                for fk_ref in column.fk_references:
-                    if SchemaTable(fk_ref.schema, fk_ref.table) not in visited:
-                        unvisited.add(SchemaTable(fk_ref.schema, fk_ref.table))
-                for pk_ref in column.pk_references:
-                    if SchemaTable(pk_ref.schema, pk_ref.table) not in visited:
-                        unvisited.add(SchemaTable(pk_ref.schema, pk_ref.table))
-        return self.__get_related_tables(unvisited, depth-1, visited)
+                for ref in column.fk_references + column.pk_references:
+                    ref_schema_table = SchemaTable(ref.schema, ref.table)
+                    if ref_schema_table not in visited and ref_schema_table not in tables_to_exclude:
+                        unvisited.add(ref_schema_table)
+
+        return self.__get_related_tables(unvisited, depth-1, tables_to_exclude, visited)
 
     def get_graph(self) -> bytes:
         digraph = self.build_digraph(self.tables, self.onlyrefs, self.unvisited_tables)
@@ -173,17 +172,18 @@ class RelatedTables(Graph):
 class FindRoute(Graph):
 
     def __init__(
-            self, start_schema_table: SchemaTable, dest_schema_table: SchemaTable, onlyrefs: bool = False,
-            shortest: bool = False, graph_name: str = None, engine: str = 'neato', graph_attr: dict = None,
-            node_attr: dict = None, edge_attr: dict = None) -> None:
+            self, start_schema_table: SchemaTable, dest_schema_table: SchemaTable, tables_to_exclude: list[SchemaTable],
+            onlyrefs: bool = False, shortest: bool = False, graph_name: str = None, engine: str = 'neato',
+            graph_attr: dict = None, node_attr: dict = None, edge_attr: dict = None) -> None:
         super().__init__(graph_name, engine, graph_attr, node_attr, edge_attr)
-        self.paths = self.__get_paths(start_schema_table, dest_schema_table, shortest)
+        self.paths = self.__get_paths(start_schema_table, dest_schema_table, tables_to_exclude, shortest)
         self.tables = {table for path in self.paths for table in path}
         self.onlyrefs = onlyrefs
         return None
 
     def __get_paths(self, start_schema_table: SchemaTable, dest_schema_table: SchemaTable,
-                    shortest: bool) -> list[list[SchemaTable]]:
+                    tables_to_exclude: list[SchemaTable], shortest: bool) -> list[list[SchemaTable]]:
+
         unvisited = set()
         unvisited.add(start_schema_table)
         visited = set()
@@ -192,37 +192,24 @@ class FindRoute(Graph):
 
         while unvisited:
             schema_table = unvisited.pop()
+            if schema_table == SchemaTable('dlfe', 'PurchaseAgreements'):
+                print()
             if schema_table == dest_schema_table:
                 continue
             visited.add(schema_table)
             for column in self.get_columns(schema_table):
-                for fk_ref in column.fk_references:
-                    fk_schema_table = SchemaTable(fk_ref.schema, fk_ref.table)
+                for ref in column.fk_references + column.pk_references:
+                    ref_schema_table = SchemaTable(ref.schema, ref.table)
 
-                    if fk_schema_table == dest_schema_table:
+                    if ref_schema_table == dest_schema_table:
                         if shortest:
-                            return [path.get(schema_table, []) + [schema_table] + [fk_schema_table]]
-                        valid_paths.append(path.get(schema_table, []) + [schema_table] + [fk_schema_table])
+                            return [path.get(schema_table, []) + [schema_table] + [ref_schema_table]]
+                        valid_paths.append(path.get(schema_table, []) + [schema_table] + [ref_schema_table])
 
-                    if fk_schema_table not in visited.union(unvisited):
-                        unvisited.add(fk_schema_table)
+                    if ref_schema_table not in visited.union(unvisited) and ref_schema_table not in tables_to_exclude:
+                        unvisited.add(ref_schema_table)
                         path.setdefault(
-                            fk_schema_table,
-                            path.get(schema_table, []).copy()
-                        ).append(schema_table)
-
-                for pk_ref in column.pk_references:
-                    pk_schema_table = SchemaTable(pk_ref.schema, pk_ref.table)
-
-                    if pk_schema_table == dest_schema_table:
-                        if shortest:
-                            return [path.get(schema_table, []) + [schema_table] + [pk_schema_table]]
-                        valid_paths.append(path.get(schema_table, []) + [schema_table] + [pk_schema_table])
-
-                    if pk_schema_table not in visited.union(unvisited):
-                        unvisited.add(pk_schema_table)
-                        path.setdefault(
-                            pk_schema_table,
+                            ref_schema_table,
                             path.get(schema_table, []).copy()
                         ).append(schema_table)
 
