@@ -6,10 +6,10 @@ class Config():
 
     def __init__(self) -> None:
         self.config = configparser.ConfigParser(allow_no_value=True)
-        self.__read_config(self.__FILENAME)
+        self._read_config(self.__FILENAME)
         return None
 
-    def __read_config(self, filename: str) -> None:
+    def _read_config(self, filename: str) -> None:
         self.config.read(filename, encoding='utf-8')
         return None
 

@@ -9,9 +9,9 @@ from erd_viewer.database import Database, Table, Schema, Column, SchemaTableColu
 class DBJSONDecoder(json.JSONDecoder):
 
     def __init__(self) -> None:
-        super().__init__(object_hook=self.__object_decoder)
+        super().__init__(object_hook=self._object_decoder)
 
-    def __object_decoder(self, obj: dict) -> Union[Schema, Table, Column, SchemaTableColumn, dict]:
+    def _object_decoder(self, obj: dict) -> Union[Schema, Table, Column, SchemaTableColumn, dict]:
         if set(Schema.__annotations__.keys()).issubset(obj.keys()): # pylint: disable=no-member
             return Schema(name=obj['name'], tables=obj['tables'])
         elif set(Table.__annotations__.keys()).issubset(obj.keys()): # pylint: disable=no-member
@@ -32,19 +32,19 @@ class DBJSONDecoder(json.JSONDecoder):
 class Loader():
 
     def __init__(self) -> None:
-        self.db = self.__deserialize_json(self.__read_json(config.get('dbschema', 'filename')))
+        self.db = self._deserialize_json(self._read_json(config.get('dbschema', 'filename')))
         self.redis = RedisClient().get_client()
-        self.__put_db_into_redis()
+        self._put_db_into_redis()
         return None
 
-    def __read_json(self, json_path: str) -> str:
+    def _read_json(self, json_path: str) -> str:
         with open(json_path) as j:
             return j.read()
 
-    def __deserialize_json(self, json_str: str) -> Database:
+    def _deserialize_json(self, json_str: str) -> Database:
         return Database(schemas=json.loads(json_str, cls=DBJSONDecoder))
 
-    def __put_db_into_redis(self) -> None:
+    def _put_db_into_redis(self) -> None:
         for schema in self.db.schemas:
             self.redis.rpush('schemas:list', schema.name)
             for table in schema.tables:

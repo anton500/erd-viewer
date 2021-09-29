@@ -9,21 +9,21 @@ from erd_viewer.loader.loader import DBJSONDecoder
 
 class Graph:
 
-    __HTML_TABLE_TEMPLATE = '<<table>{thead}{tbody}</table>>'
-    __HTML_TABLE_HEAD_TEMPLATE = '<tr><td colspan="2">{thead}</td></tr>'
-    __HTML_TABLE_BODY_TEMPLATE = '{tbody}'
-    __HTML_TABLE_ROW_TEMPLATE = '<tr><td port="{port}">{name}</td><td>{datatype}</td></tr>'
+    _HTML_TABLE_TEMPLATE = '<<table>{thead}{tbody}</table>>'
+    _HTML_TABLE_HEAD_TEMPLATE = '<tr><td colspan="2">{thead}</td></tr>'
+    _HTML_TABLE_BODY_TEMPLATE = '{tbody}'
+    _HTML_TABLE_ROW_TEMPLATE = '<tr><td port="{port}">{name}</td><td>{datatype}</td></tr>'
 
-    __graph_attr = {'overlap': 'prism', 'splines': 'spline'}
-    __node_attr = {'shape': 'plaintext'}
+    _graph_attr = {'overlap': 'prism', 'splines': 'spline'}
+    _node_attr = {'shape': 'plaintext'}
 
     def __init__(self, graph_name: str = None, engine: str = 'neato',
                  graph_attr: dict = None, node_attr: dict = None, edge_attr: dict = None) -> None:
         self.graph_name = graph_name
         self.engine = engine
 
-        self.graph_attr = graph_attr if graph_attr else self.__graph_attr
-        self.node_attr = node_attr if node_attr else self.__node_attr
+        self.graph_attr = graph_attr if graph_attr else self._graph_attr
+        self.node_attr = node_attr if node_attr else self._node_attr
         self.edge_attr = edge_attr
 
         self.redis = RedisClient().get_client()
@@ -35,16 +35,16 @@ class Graph:
             return json.loads(json_columns.decode('utf-8'), cls=DBJSONDecoder)
         return []
 
-    def __get_html_table(self, schema: str, table: str, columns: list[Column]) -> str:
-        thead = self.__HTML_TABLE_HEAD_TEMPLATE.format(thead='.'.join([schema, table]))
+    def _get_html_table(self, schema: str, table: str, columns: list[Column]) -> str:
+        thead = self._HTML_TABLE_HEAD_TEMPLATE.format(thead='.'.join([schema, table]))
         tbody = ''
         for column in columns:
-            tbody += self.__HTML_TABLE_ROW_TEMPLATE.format(port=column.name, name=column.name, datatype=column.type)
+            tbody += self._HTML_TABLE_ROW_TEMPLATE.format(port=column.name, name=column.name, datatype=column.type)
 
-        tbody = self.__HTML_TABLE_BODY_TEMPLATE.format(tbody=tbody)
-        return self.__HTML_TABLE_TEMPLATE.format(thead=thead, tbody=tbody)
+        tbody = self._HTML_TABLE_BODY_TEMPLATE.format(tbody=tbody)
+        return self._HTML_TABLE_TEMPLATE.format(thead=thead, tbody=tbody)
 
-    def __generate_refs(self, tables_with_columns: dict[SchemaTable, list[Column]],
+    def _generate_refs(self, tables_with_columns: dict[SchemaTable, list[Column]],
                         unvisited_tables: set[SchemaTable] = None) -> list[tuple[SchemaTableColumn, SchemaTableColumn]]:
 
         if unvisited_tables is None:
@@ -92,13 +92,13 @@ class Graph:
 
         return refs
 
-    def __fill_digraph(self, digraph: Digraph, tables_with_columns: dict[SchemaTable, list[Column]],
+    def _fill_digraph(self, digraph: Digraph, tables_with_columns: dict[SchemaTable, list[Column]],
                      refs: list[tuple[SchemaTableColumn, SchemaTableColumn]]) -> Digraph:
 
         for schema_table, columns in tables_with_columns.items():
             digraph.node(
                 name=f'{schema_table.schema}.{schema_table.table}',
-                label=self.__get_html_table(schema_table.schema, schema_table.table, columns)
+                label=self._get_html_table(schema_table.schema, schema_table.table, columns)
             )
 
         for stc1, stc2 in refs:
@@ -117,7 +117,7 @@ class Graph:
         tables_with_columns = {schema_table: self.get_columns(schema_table) for schema_table in tables}
 
         if paths is None:
-            refs = self.__generate_refs(tables_with_columns, unvisited_tables)
+            refs = self._generate_refs(tables_with_columns, unvisited_tables)
         else:
             refs = self._generate_path_refs(tables_with_columns, unvisited_tables)
 
@@ -131,7 +131,7 @@ class Graph:
                         filtered_columns.append(column)
                 tables_with_columns[schema_table] = filtered_columns
 
-        return self.__fill_digraph(digraph, tables_with_columns, refs)
+        return self._fill_digraph(digraph, tables_with_columns, refs)
 
     def render_digraph(self, graph: Digraph) -> bytes:
         return gzip.compress(graph.pipe(format='svg'), compresslevel=9)
@@ -142,11 +142,11 @@ class RelatedTables(Graph):
             self, schema_table: SchemaTable, depth: int, tables_to_exclude: list[SchemaTable], onlyrefs: bool = False,
             graph_name: str = None, engine: str = 'neato', graph_attr: dict = None, node_attr: dict = None, edge_attr: dict = None) -> None:
         super().__init__(graph_name, engine, graph_attr, node_attr, edge_attr)
-        self.tables, self.unvisited_tables = self.__get_related_tables({schema_table}, depth, tables_to_exclude)
+        self.tables, self.unvisited_tables = self._get_related_tables({schema_table}, depth, tables_to_exclude)
         self.onlyrefs = onlyrefs
         return None
 
-    def __get_related_tables(self, unvisited: set[SchemaTable], depth: int, tables_to_exclude: list[SchemaTable],
+    def _get_related_tables(self, unvisited: set[SchemaTable], depth: int, tables_to_exclude: list[SchemaTable],
                              visited: set[SchemaTable] = None) -> tuple[set, set]:
         if visited is None:
             visited = set()
@@ -163,7 +163,7 @@ class RelatedTables(Graph):
                     if ref_schema_table not in visited and ref_schema_table not in tables_to_exclude:
                         unvisited.add(ref_schema_table)
 
-        return self.__get_related_tables(unvisited, depth-1, tables_to_exclude, visited)
+        return self._get_related_tables(unvisited, depth-1, tables_to_exclude, visited)
 
     def get_graph(self) -> bytes:
         digraph = self.build_digraph(self.tables, self.onlyrefs, self.unvisited_tables)
@@ -176,12 +176,12 @@ class FindRoute(Graph):
             onlyrefs: bool = False, shortest: bool = False, graph_name: str = None, engine: str = 'neato',
             graph_attr: dict = None, node_attr: dict = None, edge_attr: dict = None) -> None:
         super().__init__(graph_name, engine, graph_attr, node_attr, edge_attr)
-        self.paths = self.__get_paths(start_schema_table, dest_schema_table, tables_to_exclude, shortest)
+        self.paths = self._get_paths(start_schema_table, dest_schema_table, tables_to_exclude, shortest)
         self.tables = {table for path in self.paths for table in path}
         self.onlyrefs = onlyrefs
         return None
 
-    def __get_paths(self, start_schema_table: SchemaTable, dest_schema_table: SchemaTable,
+    def _get_paths(self, start_schema_table: SchemaTable, dest_schema_table: SchemaTable,
                     tables_to_exclude: list[SchemaTable], shortest: bool) -> list[list[SchemaTable]]:
 
         unvisited = set()
