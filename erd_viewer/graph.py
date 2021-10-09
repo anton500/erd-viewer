@@ -39,13 +39,20 @@ class Graph:
         thead = self._HTML_TABLE_HEAD_TEMPLATE.format(thead='.'.join([schema, table]))
         tbody = ''
         for column in columns:
-            tbody += self._HTML_TABLE_ROW_TEMPLATE.format(port=column.name, name=column.name, datatype=column.type)
+            tbody += self._HTML_TABLE_ROW_TEMPLATE.format(
+                port=column.name,
+                name=column.name,
+                datatype=column.type
+            )
 
         tbody = self._HTML_TABLE_BODY_TEMPLATE.format(tbody=tbody)
         return self._HTML_TABLE_TEMPLATE.format(thead=thead, tbody=tbody)
 
-    def _generate_refs(self, tables_with_columns: dict[SchemaTable, list[Column]],
-                        unvisited_tables: set[SchemaTable] = None) -> list[tuple[SchemaTableColumn, SchemaTableColumn]]:
+    def _generate_refs(
+        self,
+        tables_with_columns: dict[SchemaTable, list[Column]],
+        unvisited_tables: set[SchemaTable] = None
+        ) -> list[tuple[SchemaTableColumn, SchemaTableColumn]]:
 
         if unvisited_tables is None:
             unvisited_tables = set()
@@ -70,28 +77,6 @@ class Graph:
                             )
         return refs
 
-    def _generate_path_refs(self, tables_with_columns: dict[SchemaTable, list[Column]],
-                            paths: list[list[SchemaTable]]) -> list[tuple[SchemaTableColumn, SchemaTableColumn]]:
-
-        refs = []
-
-        for path in paths:
-            while path:
-                schema_table = path.pop()
-                if not path:
-                    continue
-                next_schema_table = path[0]
-                for column in tables_with_columns[schema_table]:
-                    for ref in column.fk_references + column.pk_references:
-                        ref_schema_table = SchemaTable(ref.schema, ref.table)
-                        if ref_schema_table == next_schema_table:
-                            refs.append(
-                                (SchemaTableColumn(schema_table.schema, schema_table.table, column.name),
-                                ref)
-                            )
-
-        return refs
-
     def _fill_digraph(self, digraph: Digraph, tables_with_columns: dict[SchemaTable, list[Column]],
                      refs: list[tuple[SchemaTableColumn, SchemaTableColumn]]) -> Digraph:
 
@@ -110,16 +95,13 @@ class Graph:
         return digraph
 
     def build_digraph(self, tables: set[SchemaTable], onlyrefs: bool = False,
-                      unvisited_tables: set[SchemaTable] = None, paths: list[list[SchemaTable]] = None) -> Digraph:
+                      unvisited_tables: set[SchemaTable] = None) -> Digraph:
         digraph = Digraph(name=self.graph_name, engine=self.engine, graph_attr=self.graph_attr,
                           node_attr=self.node_attr, edge_attr=self.edge_attr)
 
         tables_with_columns = {schema_table: self.get_columns(schema_table) for schema_table in tables}
 
-        if paths is None:
-            refs = self._generate_refs(tables_with_columns, unvisited_tables)
-        else:
-            refs = self._generate_path_refs(tables_with_columns, unvisited_tables)
+        refs = self._generate_refs(tables_with_columns, unvisited_tables)
 
         if onlyrefs:
             unique_columns = {stc for t in refs for stc in t}
@@ -167,54 +149,4 @@ class RelatedTables(Graph):
 
     def get_graph(self) -> bytes:
         digraph = self.build_digraph(self.tables, self.onlyrefs, self.unvisited_tables)
-        return self.render_digraph(digraph)
-
-class FindRoute(Graph):
-
-    def __init__(
-            self, start_schema_table: SchemaTable, dest_schema_table: SchemaTable, tables_to_exclude: list[SchemaTable],
-            onlyrefs: bool = False, shortest: bool = False, graph_name: str = None, engine: str = 'neato',
-            graph_attr: dict = None, node_attr: dict = None, edge_attr: dict = None) -> None:
-        super().__init__(graph_name, engine, graph_attr, node_attr, edge_attr)
-        self.paths = self._get_paths(start_schema_table, dest_schema_table, tables_to_exclude, shortest)
-        self.tables = {table for path in self.paths for table in path}
-        self.onlyrefs = onlyrefs
-        return None
-
-    def _get_paths(self, start_schema_table: SchemaTable, dest_schema_table: SchemaTable,
-                    tables_to_exclude: list[SchemaTable], shortest: bool) -> list[list[SchemaTable]]:
-
-        unvisited = set()
-        unvisited.add(start_schema_table)
-        visited = set()
-        path: dict[SchemaTable, list[SchemaTableColumn]] = {}
-        valid_paths = []
-
-        while unvisited:
-            schema_table = unvisited.pop()
-            if schema_table == SchemaTable('dlfe', 'PurchaseAgreements'):
-                print()
-            if schema_table == dest_schema_table:
-                continue
-            visited.add(schema_table)
-            for column in self.get_columns(schema_table):
-                for ref in column.fk_references + column.pk_references:
-                    ref_schema_table = SchemaTable(ref.schema, ref.table)
-
-                    if ref_schema_table == dest_schema_table:
-                        if shortest:
-                            return [path.get(schema_table, []) + [schema_table] + [ref_schema_table]]
-                        valid_paths.append(path.get(schema_table, []) + [schema_table] + [ref_schema_table])
-
-                    if ref_schema_table not in visited.union(unvisited) and ref_schema_table not in tables_to_exclude:
-                        unvisited.add(ref_schema_table)
-                        path.setdefault(
-                            ref_schema_table,
-                            path.get(schema_table, []).copy()
-                        ).append(schema_table)
-
-        return valid_paths
-
-    def get_graph(self) -> bytes:
-        digraph = self.build_digraph(self.tables, self.onlyrefs, self.paths)
         return self.render_digraph(digraph)

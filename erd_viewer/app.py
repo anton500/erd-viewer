@@ -3,14 +3,14 @@ from hashlib import md5
 from flask import Flask, render_template, request, jsonify, make_response, Response
 
 from erd_viewer.loader.redis import RedisClient
-from erd_viewer.graph import RelatedTables, FindRoute
+from erd_viewer.graph import RelatedTables
 from erd_viewer.database import SchemaTable
 
 app = Flask(__name__)
 
 nav = [
-    {'title': 'Find a route', 'url': '/findroute'},
     {'title': 'Related tables', 'url': '/relatedtables'},
+    {'title': 'Find a route', 'url': '/findroute'},
     {'title': 'Schema', 'url': '/schema'},
     {'title': 'Database', 'url': '/database'}
 ]
@@ -28,7 +28,7 @@ def response_svg(svg: bytes) -> Response:
     response.headers["Content-Type"] = 'image/svg+xml'
     return response
 
-@app.route('/', methods=['GET'])
+
 @app.route('/findroute', methods=['GET'])
 def findroute():
     redis = RedisClient().get_client()
@@ -36,6 +36,7 @@ def findroute():
     tables = sorted(get_decoded_list(redis.hkeys(schemas[0])), key=str.casefold)
     return render_template('findroute.html', schemas=schemas, tables=tables, nav=nav, url='/findroute')
 
+@app.route('/', methods=['GET'])
 @app.route('/relatedtables', methods=['GET'])
 def relatedtables():
     redis = RedisClient().get_client()
@@ -95,13 +96,7 @@ def render_findroute():
     svg = redis.hget('cached:svg', params_hash)
 
     if svg is None:
-        svg = FindRoute(
-            SchemaTable(start_schema, start_table),
-            SchemaTable(dest_schema, dest_table),
-            tables_to_exclude,
-            onlyrefs,
-            shortest,
-        ).get_graph()
+        svg = None
         redis.hset('cached:svg', params_hash, svg)
 
     return response_svg(svg)
