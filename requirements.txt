@@ -1,4 +1,3 @@
 graphviz==0.17
-flask>=2.0.1
-uwsgi>=2.0.19
-redis>=3.5.3
+Flask>=2.0.1,<2.1
+redis>=3.5.3,<3.6
