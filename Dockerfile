@@ -2,7 +2,10 @@ FROM python:3.9-slim AS uwsgi_builder
 
 RUN apt-get -qq update \
     && apt-get -qq install build-essential python-dev libpcre3-dev -y \
-    && pip install --no-cache-dir "uwsgi>=2.0.19,<2.1"
+    && pip install --no-cache-dir "uwsgi>=2.0.19,<2.1" \
+    && apt-get -qq purge --auto-remove build-essential python-dev libpcre3-dev -y \
+    && rm -rf /var/lib/apt/lists/*
+
 
 FROM python:3.9-slim
 

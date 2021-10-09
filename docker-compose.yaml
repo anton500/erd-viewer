@@ -5,6 +5,7 @@ services:
       context: .
     image: erd-viewer:latest
     volumes:
+      - redis_socket:/tmp/redis:z
       - ./data:/usr/erd-viewer/data:ro,z
     expose:
       - 3031/tcp
@@ -27,11 +28,14 @@ services:
       context: .
       dockerfile: ./redis/Dockerfile
     image: erd-viewer_redis:latest
-    expose:
-      - 6379/tcp
+    volumes:
+      - redis_socket:/tmp/redis:z
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 10s
       timeout: 10s
       retries: 3
       start_period: 10s
+
+volumes:
+  redis_socket:
