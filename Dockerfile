@@ -8,9 +8,12 @@ RUN apt-get -qq update && apt-get -qq install graphviz build-essential python-de
     && apt-get purge --auto-remove build-essential python-dev libpcre3-dev -y \
     && rm -rf /var/lib/apt/lists/*
 
-COPY configs/uwsgi.ini .
+COPY uwsgi/uwsgi.ini .
 COPY erd_viewer/ erd_viewer/
 
 EXPOSE 3031/tcp
 
-ENTRYPOINT ["uwsgi", "uwsgi.ini"]
+COPY docker-entrypoint.sh .
+RUN chmod 755 docker-entrypoint.sh
+
+ENTRYPOINT ["./docker-entrypoint.sh"]
