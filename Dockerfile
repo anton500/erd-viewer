@@ -1,10 +1,10 @@
 FROM python:3.9-slim AS uwsgi_builder
 
-RUN apt-get -qq update \
+RUN { apt-get -qq update \
     && apt-get -qq install build-essential python-dev libpcre3-dev -y \
     && pip install --no-cache-dir "uwsgi>=2.0.19,<2.1" \
     && apt-get -qq purge --auto-remove build-essential python-dev libpcre3-dev -y \
-    && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/*; } > /dev/null
 
 
 FROM python:3.9-slim
@@ -12,10 +12,10 @@ FROM python:3.9-slim
 WORKDIR /usr/erd-viewer
 COPY requirements.txt .
 
-RUN apt-get -qq update \
+RUN { apt-get -qq update \
     && apt-get -qq install graphviz libpcre3 -y \
     && pip install --no-cache-dir -r requirements.txt \
-    && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/*; } > /dev/null
 
 COPY --from=uwsgi_builder /usr/local/bin/uwsgi /usr/local/bin/uwsgi
 
