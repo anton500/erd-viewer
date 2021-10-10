@@ -146,6 +146,7 @@ def render_related_tables():
         schema,
         table,
         exclude,
+        str(depth),
         str(onlyrefs),
     )
 
