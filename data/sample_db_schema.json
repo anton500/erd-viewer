@@ -1,0 +1,3987 @@
+[
+    {
+        "name": "dbo",
+        "tables": [
+            {
+                "name": "AWBuildVersion",
+                "columns": [
+                    {
+                        "name": "SystemInformationID",
+                        "type": "tinyint",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "Database Version",
+                        "type": "nvarchar(25)",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "VersionDate",
+                        "type": "datetime",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "ModifiedDate",
+                        "type": "datetime",
+                        "null": "NOT NULL"
+                    }
+                ]
+            },
+            {
+                "name": "DatabaseLog",
+                "columns": [
+                    {
+                        "name": "DatabaseLogID",
+                        "type": "int",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "PostTime",
+                        "type": "datetime",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "DatabaseUser",
+                        "type": "sysname",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "Event",
+                        "type": "sysname",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "Schema",
+                        "type": "sysname",
+                        "null": "NULL"
+                    },
+                    {
+                        "name": "Object",
+                        "type": "sysname",
+                        "null": "NULL"
+                    },
+                    {
+                        "name": "TSQL",
+                        "type": "nvarchar(max)",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "XmlEvent",
+                        "type": "xml",
+                        "null": "NOT NULL"
+                    }
+                ]
+            },
+            {
+                "name": "ErrorLog",
+                "columns": [
+                    {
+                        "name": "ErrorLogID",
+                        "type": "int",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "ErrorTime",
+                        "type": "datetime",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "UserName",
+                        "type": "sysname",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "ErrorNumber",
+                        "type": "int",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "ErrorSeverity",
+                        "type": "int",
+                        "null": "NULL"
+                    },
+                    {
+                        "name": "ErrorState",
+                        "type": "int",
+                        "null": "NULL"
+                    },
+                    {
+                        "name": "ErrorProcedure",
+                        "type": "nvarchar(126)",
+                        "null": "NULL"
+                    },
+                    {
+                        "name": "ErrorLine",
+                        "type": "int",
+                        "null": "NULL"
+                    },
+                    {
+                        "name": "ErrorMessage",
+                        "type": "nvarchar(4000)",
+                        "null": "NOT NULL"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "name": "HumanResources",
+        "tables": [
+            {
+                "name": "Department",
+                "columns": [
+                    {
+                        "name": "DepartmentID",
+                        "type": "smallint",
+                        "null": "NOT NULL",
+                        "fk_references": [
+                            {
+                                "schema": "HumanResources",
+                                "table": "EmployeeDepartmentHistory",
+                                "column": "DepartmentID"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "Name",
+                        "type": "Name",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "GroupName",
+                        "type": "Name",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "ModifiedDate",
+                        "type": "datetime",
+                        "null": "NOT NULL"
+                    }
+                ]
+            },
+            {
+                "name": "Employee",
+                "columns": [
+                    {
+                        "name": "BusinessEntityID",
+                        "type": "int",
+                        "null": "NOT NULL",
+                        "fk_references": [
+                            {
+                                "schema": "HumanResources",
+                                "table": "EmployeeDepartmentHistory",
+                                "column": "BusinessEntityID"
+                            },
+                            {
+                                "schema": "HumanResources",
+                                "table": "EmployeePayHistory",
+                                "column": "BusinessEntityID"
+                            },
+                            {
+                                "schema": "HumanResources",
+                                "table": "JobCandidate",
+                                "column": "BusinessEntityID"
+                            },
+                            {
+                                "schema": "Production",
+                                "table": "Document",
+                                "column": "Owner"
+                            },
+                            {
+                                "schema": "Purchasing",
+                                "table": "PurchaseOrderHeader",
+                                "column": "EmployeeID"
+                            },
+                            {
+                                "schema": "Sales",
+                                "table": "SalesPerson",
+                                "column": "BusinessEntityID"
+                            }
+                        ],
+                        "pk_references": [
+                            {
+                                "schema": "Person",
+                                "table": "Person",
+                                "column": "BusinessEntityID"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "NationalIDNumber",
+                        "type": "nvarchar(15)",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "LoginID",
+                        "type": "nvarchar(256)",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "OrganizationNode",
+                        "type": "hierarchyid",
+                        "null": "NULL"
+                    },
+                    {
+                        "name": "OrganizationLevel",
+                        "type": "smallint",
+                        "null": "NULL"
+                    },
+                    {
+                        "name": "JobTitle",
+                        "type": "nvarchar(50)",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "BirthDate",
+                        "type": "date",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "MaritalStatus",
+                        "type": "nchar(1)",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "Gender",
+                        "type": "nchar(1)",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "HireDate",
+                        "type": "date",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "SalariedFlag",
+                        "type": "Flag",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "VacationHours",
+                        "type": "smallint",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "SickLeaveHours",
+                        "type": "smallint",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "CurrentFlag",
+                        "type": "Flag",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "rowguid",
+                        "type": "uniqueidentifier",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "ModifiedDate",
+                        "type": "datetime",
+                        "null": "NOT NULL"
+                    }
+                ]
+            },
+            {
+                "name": "EmployeeDepartmentHistory",
+                "columns": [
+                    {
+                        "name": "BusinessEntityID",
+                        "type": "int",
+                        "null": "NOT NULL",
+                        "pk_references": [
+                            {
+                                "schema": "HumanResources",
+                                "table": "Employee",
+                                "column": "BusinessEntityID"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "DepartmentID",
+                        "type": "smallint",
+                        "null": "NOT NULL",
+                        "pk_references": [
+                            {
+                                "schema": "HumanResources",
+                                "table": "Department",
+                                "column": "DepartmentID"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "ShiftID",
+                        "type": "tinyint",
+                        "null": "NOT NULL",
+                        "pk_references": [
+                            {
+                                "schema": "HumanResources",
+                                "table": "Shift",
+                                "column": "ShiftID"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "StartDate",
+                        "type": "date",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "EndDate",
+                        "type": "date",
+                        "null": "NULL"
+                    },
+                    {
+                        "name": "ModifiedDate",
+                        "type": "datetime",
+                        "null": "NOT NULL"
+                    }
+                ]
+            },
+            {
+                "name": "EmployeePayHistory",
+                "columns": [
+                    {
+                        "name": "BusinessEntityID",
+                        "type": "int",
+                        "null": "NOT NULL",
+                        "pk_references": [
+                            {
+                                "schema": "HumanResources",
+                                "table": "Employee",
+                                "column": "BusinessEntityID"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "RateChangeDate",
+                        "type": "datetime",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "Rate",
+                        "type": "money",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "PayFrequency",
+                        "type": "tinyint",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "ModifiedDate",
+                        "type": "datetime",
+                        "null": "NOT NULL"
+                    }
+                ]
+            },
+            {
+                "name": "JobCandidate",
+                "columns": [
+                    {
+                        "name": "JobCandidateID",
+                        "type": "int",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "BusinessEntityID",
+                        "type": "int",
+                        "null": "NULL",
+                        "pk_references": [
+                            {
+                                "schema": "HumanResources",
+                                "table": "Employee",
+                                "column": "BusinessEntityID"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "Resume",
+                        "type": "xml",
+                        "null": "NULL"
+                    },
+                    {
+                        "name": "ModifiedDate",
+                        "type": "datetime",
+                        "null": "NOT NULL"
+                    }
+                ]
+            },
+            {
+                "name": "Shift",
+                "columns": [
+                    {
+                        "name": "ShiftID",
+                        "type": "tinyint",
+                        "null": "NOT NULL",
+                        "fk_references": [
+                            {
+                                "schema": "HumanResources",
+                                "table": "EmployeeDepartmentHistory",
+                                "column": "ShiftID"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "Name",
+                        "type": "Name",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "StartTime",
+                        "type": "time",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "EndTime",
+                        "type": "time",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "ModifiedDate",
+                        "type": "datetime",
+                        "null": "NOT NULL"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "name": "Person",
+        "tables": [
+            {
+                "name": "Address",
+                "columns": [
+                    {
+                        "name": "AddressID",
+                        "type": "int",
+                        "null": "NOT NULL",
+                        "fk_references": [
+                            {
+                                "schema": "Person",
+                                "table": "BusinessEntityAddress",
+                                "column": "AddressID"
+                            },
+                            {
+                                "schema": "Sales",
+                                "table": "SalesOrderHeader",
+                                "column": "BillToAddressID"
+                            },
+                            {
+                                "schema": "Sales",
+                                "table": "SalesOrderHeader",
+                                "column": "ShipToAddressID"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "AddressLine1",
+                        "type": "nvarchar(60)",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "AddressLine2",
+                        "type": "nvarchar(60)",
+                        "null": "NULL"
+                    },
+                    {
+                        "name": "City",
+                        "type": "nvarchar(30)",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "StateProvinceID",
+                        "type": "int",
+                        "null": "NOT NULL",
+                        "pk_references": [
+                            {
+                                "schema": "Person",
+                                "table": "StateProvince",
+                                "column": "StateProvinceID"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "PostalCode",
+                        "type": "nvarchar(15)",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "SpatialLocation",
+                        "type": "geography",
+                        "null": "NULL"
+                    },
+                    {
+                        "name": "rowguid",
+                        "type": "uniqueidentifier",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "ModifiedDate",
+                        "type": "datetime",
+                        "null": "NOT NULL"
+                    }
+                ]
+            },
+            {
+                "name": "AddressType",
+                "columns": [
+                    {
+                        "name": "AddressTypeID",
+                        "type": "int",
+                        "null": "NOT NULL",
+                        "fk_references": [
+                            {
+                                "schema": "Person",
+                                "table": "BusinessEntityAddress",
+                                "column": "AddressTypeID"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "Name",
+                        "type": "Name",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "rowguid",
+                        "type": "uniqueidentifier",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "ModifiedDate",
+                        "type": "datetime",
+                        "null": "NOT NULL"
+                    }
+                ]
+            },
+            {
+                "name": "BusinessEntity",
+                "columns": [
+                    {
+                        "name": "BusinessEntityID",
+                        "type": "int",
+                        "null": "NOT NULL",
+                        "fk_references": [
+                            {
+                                "schema": "Person",
+                                "table": "BusinessEntityAddress",
+                                "column": "BusinessEntityID"
+                            },
+                            {
+                                "schema": "Person",
+                                "table": "BusinessEntityContact",
+                                "column": "BusinessEntityID"
+                            },
+                            {
+                                "schema": "Person",
+                                "table": "Person",
+                                "column": "BusinessEntityID"
+                            },
+                            {
+                                "schema": "Purchasing",
+                                "table": "Vendor",
+                                "column": "BusinessEntityID"
+                            },
+                            {
+                                "schema": "Sales",
+                                "table": "Store",
+                                "column": "BusinessEntityID"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "rowguid",
+                        "type": "uniqueidentifier",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "ModifiedDate",
+                        "type": "datetime",
+                        "null": "NOT NULL"
+                    }
+                ]
+            },
+            {
+                "name": "BusinessEntityAddress",
+                "columns": [
+                    {
+                        "name": "BusinessEntityID",
+                        "type": "int",
+                        "null": "NOT NULL",
+                        "pk_references": [
+                            {
+                                "schema": "Person",
+                                "table": "BusinessEntity",
+                                "column": "BusinessEntityID"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "AddressID",
+                        "type": "int",
+                        "null": "NOT NULL",
+                        "pk_references": [
+                            {
+                                "schema": "Person",
+                                "table": "Address",
+                                "column": "AddressID"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "AddressTypeID",
+                        "type": "int",
+                        "null": "NOT NULL",
+                        "pk_references": [
+                            {
+                                "schema": "Person",
+                                "table": "AddressType",
+                                "column": "AddressTypeID"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "rowguid",
+                        "type": "uniqueidentifier",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "ModifiedDate",
+                        "type": "datetime",
+                        "null": "NOT NULL"
+                    }
+                ]
+            },
+            {
+                "name": "BusinessEntityContact",
+                "columns": [
+                    {
+                        "name": "BusinessEntityID",
+                        "type": "int",
+                        "null": "NOT NULL",
+                        "pk_references": [
+                            {
+                                "schema": "Person",
+                                "table": "BusinessEntity",
+                                "column": "BusinessEntityID"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "PersonID",
+                        "type": "int",
+                        "null": "NOT NULL",
+                        "pk_references": [
+                            {
+                                "schema": "Person",
+                                "table": "Person",
+                                "column": "BusinessEntityID"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "ContactTypeID",
+                        "type": "int",
+                        "null": "NOT NULL",
+                        "pk_references": [
+                            {
+                                "schema": "Person",
+                                "table": "ContactType",
+                                "column": "ContactTypeID"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "rowguid",
+                        "type": "uniqueidentifier",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "ModifiedDate",
+                        "type": "datetime",
+                        "null": "NOT NULL"
+                    }
+                ]
+            },
+            {
+                "name": "ContactType",
+                "columns": [
+                    {
+                        "name": "ContactTypeID",
+                        "type": "int",
+                        "null": "NOT NULL",
+                        "fk_references": [
+                            {
+                                "schema": "Person",
+                                "table": "BusinessEntityContact",
+                                "column": "ContactTypeID"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "Name",
+                        "type": "Name",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "ModifiedDate",
+                        "type": "datetime",
+                        "null": "NOT NULL"
+                    }
+                ]
+            },
+            {
+                "name": "CountryRegion",
+                "columns": [
+                    {
+                        "name": "CountryRegionCode",
+                        "type": "nvarchar(3)",
+                        "null": "NOT NULL",
+                        "fk_references": [
+                            {
+                                "schema": "Person",
+                                "table": "StateProvince",
+                                "column": "CountryRegionCode"
+                            },
+                            {
+                                "schema": "Sales",
+                                "table": "CountryRegionCurrency",
+                                "column": "CountryRegionCode"
+                            },
+                            {
+                                "schema": "Sales",
+                                "table": "SalesTerritory",
+                                "column": "CountryRegionCode"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "Name",
+                        "type": "Name",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "ModifiedDate",
+                        "type": "datetime",
+                        "null": "NOT NULL"
+                    }
+                ]
+            },
+            {
+                "name": "EmailAddress",
+                "columns": [
+                    {
+                        "name": "BusinessEntityID",
+                        "type": "int",
+                        "null": "NOT NULL",
+                        "pk_references": [
+                            {
+                                "schema": "Person",
+                                "table": "Person",
+                                "column": "BusinessEntityID"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "EmailAddressID",
+                        "type": "int",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "EmailAddress",
+                        "type": "nvarchar(50)",
+                        "null": "NULL"
+                    },
+                    {
+                        "name": "rowguid",
+                        "type": "uniqueidentifier",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "ModifiedDate",
+                        "type": "datetime",
+                        "null": "NOT NULL"
+                    }
+                ]
+            },
+            {
+                "name": "Password",
+                "columns": [
+                    {
+                        "name": "BusinessEntityID",
+                        "type": "int",
+                        "null": "NOT NULL",
+                        "pk_references": [
+                            {
+                                "schema": "Person",
+                                "table": "Person",
+                                "column": "BusinessEntityID"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "PasswordHash",
+                        "type": "varchar(128)",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "PasswordSalt",
+                        "type": "varchar(10)",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "rowguid",
+                        "type": "uniqueidentifier",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "ModifiedDate",
+                        "type": "datetime",
+                        "null": "NOT NULL"
+                    }
+                ]
+            },
+            {
+                "name": "Person",
+                "columns": [
+                    {
+                        "name": "BusinessEntityID",
+                        "type": "int",
+                        "null": "NOT NULL",
+                        "fk_references": [
+                            {
+                                "schema": "HumanResources",
+                                "table": "Employee",
+                                "column": "BusinessEntityID"
+                            },
+                            {
+                                "schema": "Person",
+                                "table": "BusinessEntityContact",
+                                "column": "PersonID"
+                            },
+                            {
+                                "schema": "Person",
+                                "table": "EmailAddress",
+                                "column": "BusinessEntityID"
+                            },
+                            {
+                                "schema": "Person",
+                                "table": "Password",
+                                "column": "BusinessEntityID"
+                            },
+                            {
+                                "schema": "Person",
+                                "table": "PersonPhone",
+                                "column": "BusinessEntityID"
+                            },
+                            {
+                                "schema": "Sales",
+                                "table": "Customer",
+                                "column": "PersonID"
+                            },
+                            {
+                                "schema": "Sales",
+                                "table": "PersonCreditCard",
+                                "column": "BusinessEntityID"
+                            }
+                        ],
+                        "pk_references": [
+                            {
+                                "schema": "Person",
+                                "table": "BusinessEntity",
+                                "column": "BusinessEntityID"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "PersonType",
+                        "type": "nchar(2)",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "NameStyle",
+                        "type": "NameStyle",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "Title",
+                        "type": "nvarchar(8)",
+                        "null": "NULL"
+                    },
+                    {
+                        "name": "FirstName",
+                        "type": "Name",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "MiddleName",
+                        "type": "Name",
+                        "null": "NULL"
+                    },
+                    {
+                        "name": "LastName",
+                        "type": "Name",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "Suffix",
+                        "type": "nvarchar(10)",
+                        "null": "NULL"
+                    },
+                    {
+                        "name": "EmailPromotion",
+                        "type": "int",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "AdditionalContactInfo",
+                        "type": "xml",
+                        "null": "NULL"
+                    },
+                    {
+                        "name": "Demographics",
+                        "type": "xml",
+                        "null": "NULL"
+                    },
+                    {
+                        "name": "rowguid",
+                        "type": "uniqueidentifier",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "ModifiedDate",
+                        "type": "datetime",
+                        "null": "NOT NULL"
+                    }
+                ]
+            },
+            {
+                "name": "PersonPhone",
+                "columns": [
+                    {
+                        "name": "BusinessEntityID",
+                        "type": "int",
+                        "null": "NOT NULL",
+                        "pk_references": [
+                            {
+                                "schema": "Person",
+                                "table": "Person",
+                                "column": "BusinessEntityID"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "PhoneNumber",
+                        "type": "Phone",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "PhoneNumberTypeID",
+                        "type": "int",
+                        "null": "NOT NULL",
+                        "pk_references": [
+                            {
+                                "schema": "Person",
+                                "table": "PhoneNumberType",
+                                "column": "PhoneNumberTypeID"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "ModifiedDate",
+                        "type": "datetime",
+                        "null": "NOT NULL"
+                    }
+                ]
+            },
+            {
+                "name": "PhoneNumberType",
+                "columns": [
+                    {
+                        "name": "PhoneNumberTypeID",
+                        "type": "int",
+                        "null": "NOT NULL",
+                        "fk_references": [
+                            {
+                                "schema": "Person",
+                                "table": "PersonPhone",
+                                "column": "PhoneNumberTypeID"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "Name",
+                        "type": "Name",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "ModifiedDate",
+                        "type": "datetime",
+                        "null": "NOT NULL"
+                    }
+                ]
+            },
+            {
+                "name": "StateProvince",
+                "columns": [
+                    {
+                        "name": "StateProvinceID",
+                        "type": "int",
+                        "null": "NOT NULL",
+                        "fk_references": [
+                            {
+                                "schema": "Person",
+                                "table": "Address",
+                                "column": "StateProvinceID"
+                            },
+                            {
+                                "schema": "Sales",
+                                "table": "SalesTaxRate",
+                                "column": "StateProvinceID"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "StateProvinceCode",
+                        "type": "nchar(3)",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "CountryRegionCode",
+                        "type": "nvarchar(3)",
+                        "null": "NOT NULL",
+                        "pk_references": [
+                            {
+                                "schema": "Person",
+                                "table": "CountryRegion",
+                                "column": "CountryRegionCode"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "IsOnlyStateProvinceFlag",
+                        "type": "Flag",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "Name",
+                        "type": "Name",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "TerritoryID",
+                        "type": "int",
+                        "null": "NOT NULL",
+                        "pk_references": [
+                            {
+                                "schema": "Sales",
+                                "table": "SalesTerritory",
+                                "column": "TerritoryID"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "rowguid",
+                        "type": "uniqueidentifier",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "ModifiedDate",
+                        "type": "datetime",
+                        "null": "NOT NULL"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "name": "Production",
+        "tables": [
+            {
+                "name": "BillOfMaterials",
+                "columns": [
+                    {
+                        "name": "BillOfMaterialsID",
+                        "type": "int",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "ProductAssemblyID",
+                        "type": "int",
+                        "null": "NULL",
+                        "pk_references": [
+                            {
+                                "schema": "Production",
+                                "table": "Product",
+                                "column": "ProductID"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "ComponentID",
+                        "type": "int",
+                        "null": "NOT NULL",
+                        "pk_references": [
+                            {
+                                "schema": "Production",
+                                "table": "Product",
+                                "column": "ProductID"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "StartDate",
+                        "type": "datetime",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "EndDate",
+                        "type": "datetime",
+                        "null": "NULL"
+                    },
+                    {
+                        "name": "UnitMeasureCode",
+                        "type": "nchar(3)",
+                        "null": "NOT NULL",
+                        "pk_references": [
+                            {
+                                "schema": "Production",
+                                "table": "UnitMeasure",
+                                "column": "UnitMeasureCode"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "BOMLevel",
+                        "type": "smallint",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "PerAssemblyQty",
+                        "type": "decimal(8,2)",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "ModifiedDate",
+                        "type": "datetime",
+                        "null": "NOT NULL"
+                    }
+                ]
+            },
+            {
+                "name": "Culture",
+                "columns": [
+                    {
+                        "name": "CultureID",
+                        "type": "nchar(6)",
+                        "null": "NOT NULL",
+                        "fk_references": [
+                            {
+                                "schema": "Production",
+                                "table": "ProductModelProductDescriptionCulture",
+                                "column": "CultureID"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "Name",
+                        "type": "Name",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "ModifiedDate",
+                        "type": "datetime",
+                        "null": "NOT NULL"
+                    }
+                ]
+            },
+            {
+                "name": "Document",
+                "columns": [
+                    {
+                        "name": "DocumentNode",
+                        "type": "hierarchyid",
+                        "null": "NOT NULL",
+                        "fk_references": [
+                            {
+                                "schema": "Production",
+                                "table": "ProductDocument",
+                                "column": "DocumentNode"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "DocumentLevel",
+                        "type": "smallint",
+                        "null": "NULL"
+                    },
+                    {
+                        "name": "Title",
+                        "type": "nvarchar(50)",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "Owner",
+                        "type": "int",
+                        "null": "NOT NULL",
+                        "pk_references": [
+                            {
+                                "schema": "HumanResources",
+                                "table": "Employee",
+                                "column": "BusinessEntityID"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "FolderFlag",
+                        "type": "bit",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "FileName",
+                        "type": "nvarchar(400)",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "FileExtension",
+                        "type": "nvarchar(8)",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "Revision",
+                        "type": "nchar(5)",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "ChangeNumber",
+                        "type": "int",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "Status",
+                        "type": "tinyint",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "DocumentSummary",
+                        "type": "nvarchar(max)",
+                        "null": "NULL"
+                    },
+                    {
+                        "name": "Document",
+                        "type": "varbinary(max)",
+                        "null": "NULL"
+                    },
+                    {
+                        "name": "rowguid",
+                        "type": "uniqueidentifier",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "ModifiedDate",
+                        "type": "datetime",
+                        "null": "NOT NULL"
+                    }
+                ]
+            },
+            {
+                "name": "Illustration",
+                "columns": [
+                    {
+                        "name": "IllustrationID",
+                        "type": "int",
+                        "null": "NOT NULL",
+                        "fk_references": [
+                            {
+                                "schema": "Production",
+                                "table": "ProductModelIllustration",
+                                "column": "IllustrationID"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "Diagram",
+                        "type": "xml",
+                        "null": "NULL"
+                    },
+                    {
+                        "name": "ModifiedDate",
+                        "type": "datetime",
+                        "null": "NOT NULL"
+                    }
+                ]
+            },
+            {
+                "name": "Location",
+                "columns": [
+                    {
+                        "name": "LocationID",
+                        "type": "smallint",
+                        "null": "NOT NULL",
+                        "fk_references": [
+                            {
+                                "schema": "Production",
+                                "table": "ProductInventory",
+                                "column": "LocationID"
+                            },
+                            {
+                                "schema": "Production",
+                                "table": "WorkOrderRouting",
+                                "column": "LocationID"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "Name",
+                        "type": "Name",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "CostRate",
+                        "type": "smallmoney",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "Availability",
+                        "type": "decimal(8,2)",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "ModifiedDate",
+                        "type": "datetime",
+                        "null": "NOT NULL"
+                    }
+                ]
+            },
+            {
+                "name": "Product",
+                "columns": [
+                    {
+                        "name": "ProductID",
+                        "type": "int",
+                        "null": "NOT NULL",
+                        "fk_references": [
+                            {
+                                "schema": "Production",
+                                "table": "BillOfMaterials",
+                                "column": "ProductAssemblyID"
+                            },
+                            {
+                                "schema": "Production",
+                                "table": "BillOfMaterials",
+                                "column": "ComponentID"
+                            },
+                            {
+                                "schema": "Production",
+                                "table": "ProductCostHistory",
+                                "column": "ProductID"
+                            },
+                            {
+                                "schema": "Production",
+                                "table": "ProductDocument",
+                                "column": "ProductID"
+                            },
+                            {
+                                "schema": "Production",
+                                "table": "ProductInventory",
+                                "column": "ProductID"
+                            },
+                            {
+                                "schema": "Production",
+                                "table": "ProductListPriceHistory",
+                                "column": "ProductID"
+                            },
+                            {
+                                "schema": "Production",
+                                "table": "ProductProductPhoto",
+                                "column": "ProductID"
+                            },
+                            {
+                                "schema": "Production",
+                                "table": "ProductReview",
+                                "column": "ProductID"
+                            },
+                            {
+                                "schema": "Production",
+                                "table": "TransactionHistory",
+                                "column": "ProductID"
+                            },
+                            {
+                                "schema": "Production",
+                                "table": "WorkOrder",
+                                "column": "ProductID"
+                            },
+                            {
+                                "schema": "Purchasing",
+                                "table": "ProductVendor",
+                                "column": "ProductID"
+                            },
+                            {
+                                "schema": "Purchasing",
+                                "table": "PurchaseOrderDetail",
+                                "column": "ProductID"
+                            },
+                            {
+                                "schema": "Sales",
+                                "table": "ShoppingCartItem",
+                                "column": "ProductID"
+                            },
+                            {
+                                "schema": "Sales",
+                                "table": "SpecialOfferProduct",
+                                "column": "ProductID"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "Name",
+                        "type": "Name",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "ProductNumber",
+                        "type": "nvarchar(25)",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "MakeFlag",
+                        "type": "Flag",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "FinishedGoodsFlag",
+                        "type": "Flag",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "Color",
+                        "type": "nvarchar(15)",
+                        "null": "NULL"
+                    },
+                    {
+                        "name": "SafetyStockLevel",
+                        "type": "smallint",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "ReorderPoint",
+                        "type": "smallint",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "StandardCost",
+                        "type": "money",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "ListPrice",
+                        "type": "money",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "Size",
+                        "type": "nvarchar(5)",
+                        "null": "NULL"
+                    },
+                    {
+                        "name": "SizeUnitMeasureCode",
+                        "type": "nchar(3)",
+                        "null": "NULL",
+                        "pk_references": [
+                            {
+                                "schema": "Production",
+                                "table": "UnitMeasure",
+                                "column": "UnitMeasureCode"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "WeightUnitMeasureCode",
+                        "type": "nchar(3)",
+                        "null": "NULL",
+                        "pk_references": [
+                            {
+                                "schema": "Production",
+                                "table": "UnitMeasure",
+                                "column": "UnitMeasureCode"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "Weight",
+                        "type": "decimal(8,2)",
+                        "null": "NULL"
+                    },
+                    {
+                        "name": "DaysToManufacture",
+                        "type": "int",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "ProductLine",
+                        "type": "nchar(2)",
+                        "null": "NULL"
+                    },
+                    {
+                        "name": "Class",
+                        "type": "nchar(2)",
+                        "null": "NULL"
+                    },
+                    {
+                        "name": "Style",
+                        "type": "nchar(2)",
+                        "null": "NULL"
+                    },
+                    {
+                        "name": "ProductSubcategoryID",
+                        "type": "int",
+                        "null": "NULL",
+                        "pk_references": [
+                            {
+                                "schema": "Production",
+                                "table": "ProductSubcategory",
+                                "column": "ProductSubcategoryID"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "ProductModelID",
+                        "type": "int",
+                        "null": "NULL",
+                        "pk_references": [
+                            {
+                                "schema": "Production",
+                                "table": "ProductModel",
+                                "column": "ProductModelID"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "SellStartDate",
+                        "type": "datetime",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "SellEndDate",
+                        "type": "datetime",
+                        "null": "NULL"
+                    },
+                    {
+                        "name": "DiscontinuedDate",
+                        "type": "datetime",
+                        "null": "NULL"
+                    },
+                    {
+                        "name": "rowguid",
+                        "type": "uniqueidentifier",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "ModifiedDate",
+                        "type": "datetime",
+                        "null": "NOT NULL"
+                    }
+                ]
+            },
+            {
+                "name": "ProductCategory",
+                "columns": [
+                    {
+                        "name": "ProductCategoryID",
+                        "type": "int",
+                        "null": "NOT NULL",
+                        "fk_references": [
+                            {
+                                "schema": "Production",
+                                "table": "ProductSubcategory",
+                                "column": "ProductCategoryID"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "Name",
+                        "type": "Name",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "rowguid",
+                        "type": "uniqueidentifier",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "ModifiedDate",
+                        "type": "datetime",
+                        "null": "NOT NULL"
+                    }
+                ]
+            },
+            {
+                "name": "ProductCostHistory",
+                "columns": [
+                    {
+                        "name": "ProductID",
+                        "type": "int",
+                        "null": "NOT NULL",
+                        "pk_references": [
+                            {
+                                "schema": "Production",
+                                "table": "Product",
+                                "column": "ProductID"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "StartDate",
+                        "type": "datetime",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "EndDate",
+                        "type": "datetime",
+                        "null": "NULL"
+                    },
+                    {
+                        "name": "StandardCost",
+                        "type": "money",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "ModifiedDate",
+                        "type": "datetime",
+                        "null": "NOT NULL"
+                    }
+                ]
+            },
+            {
+                "name": "ProductDescription",
+                "columns": [
+                    {
+                        "name": "ProductDescriptionID",
+                        "type": "int",
+                        "null": "NOT NULL",
+                        "fk_references": [
+                            {
+                                "schema": "Production",
+                                "table": "ProductModelProductDescriptionCulture",
+                                "column": "ProductDescriptionID"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "Description",
+                        "type": "nvarchar(400)",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "rowguid",
+                        "type": "uniqueidentifier",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "ModifiedDate",
+                        "type": "datetime",
+                        "null": "NOT NULL"
+                    }
+                ]
+            },
+            {
+                "name": "ProductDocument",
+                "columns": [
+                    {
+                        "name": "ProductID",
+                        "type": "int",
+                        "null": "NOT NULL",
+                        "pk_references": [
+                            {
+                                "schema": "Production",
+                                "table": "Product",
+                                "column": "ProductID"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "DocumentNode",
+                        "type": "hierarchyid",
+                        "null": "NOT NULL",
+                        "pk_references": [
+                            {
+                                "schema": "Production",
+                                "table": "Document",
+                                "column": "DocumentNode"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "ModifiedDate",
+                        "type": "datetime",
+                        "null": "NOT NULL"
+                    }
+                ]
+            },
+            {
+                "name": "ProductInventory",
+                "columns": [
+                    {
+                        "name": "ProductID",
+                        "type": "int",
+                        "null": "NOT NULL",
+                        "pk_references": [
+                            {
+                                "schema": "Production",
+                                "table": "Product",
+                                "column": "ProductID"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "LocationID",
+                        "type": "smallint",
+                        "null": "NOT NULL",
+                        "pk_references": [
+                            {
+                                "schema": "Production",
+                                "table": "Location",
+                                "column": "LocationID"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "Shelf",
+                        "type": "nvarchar(10)",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "Bin",
+                        "type": "tinyint",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "Quantity",
+                        "type": "smallint",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "rowguid",
+                        "type": "uniqueidentifier",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "ModifiedDate",
+                        "type": "datetime",
+                        "null": "NOT NULL"
+                    }
+                ]
+            },
+            {
+                "name": "ProductListPriceHistory",
+                "columns": [
+                    {
+                        "name": "ProductID",
+                        "type": "int",
+                        "null": "NOT NULL",
+                        "pk_references": [
+                            {
+                                "schema": "Production",
+                                "table": "Product",
+                                "column": "ProductID"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "StartDate",
+                        "type": "datetime",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "EndDate",
+                        "type": "datetime",
+                        "null": "NULL"
+                    },
+                    {
+                        "name": "ListPrice",
+                        "type": "money",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "ModifiedDate",
+                        "type": "datetime",
+                        "null": "NOT NULL"
+                    }
+                ]
+            },
+            {
+                "name": "ProductModel",
+                "columns": [
+                    {
+                        "name": "ProductModelID",
+                        "type": "int",
+                        "null": "NOT NULL",
+                        "fk_references": [
+                            {
+                                "schema": "Production",
+                                "table": "Product",
+                                "column": "ProductModelID"
+                            },
+                            {
+                                "schema": "Production",
+                                "table": "ProductModelIllustration",
+                                "column": "ProductModelID"
+                            },
+                            {
+                                "schema": "Production",
+                                "table": "ProductModelProductDescriptionCulture",
+                                "column": "ProductModelID"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "Name",
+                        "type": "Name",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "CatalogDescription",
+                        "type": "xml",
+                        "null": "NULL"
+                    },
+                    {
+                        "name": "Instructions",
+                        "type": "xml",
+                        "null": "NULL"
+                    },
+                    {
+                        "name": "rowguid",
+                        "type": "uniqueidentifier",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "ModifiedDate",
+                        "type": "datetime",
+                        "null": "NOT NULL"
+                    }
+                ]
+            },
+            {
+                "name": "ProductModelIllustration",
+                "columns": [
+                    {
+                        "name": "ProductModelID",
+                        "type": "int",
+                        "null": "NOT NULL",
+                        "pk_references": [
+                            {
+                                "schema": "Production",
+                                "table": "ProductModel",
+                                "column": "ProductModelID"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "IllustrationID",
+                        "type": "int",
+                        "null": "NOT NULL",
+                        "pk_references": [
+                            {
+                                "schema": "Production",
+                                "table": "Illustration",
+                                "column": "IllustrationID"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "ModifiedDate",
+                        "type": "datetime",
+                        "null": "NOT NULL"
+                    }
+                ]
+            },
+            {
+                "name": "ProductModelProductDescriptionCulture",
+                "columns": [
+                    {
+                        "name": "ProductModelID",
+                        "type": "int",
+                        "null": "NOT NULL",
+                        "pk_references": [
+                            {
+                                "schema": "Production",
+                                "table": "ProductModel",
+                                "column": "ProductModelID"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "ProductDescriptionID",
+                        "type": "int",
+                        "null": "NOT NULL",
+                        "pk_references": [
+                            {
+                                "schema": "Production",
+                                "table": "ProductDescription",
+                                "column": "ProductDescriptionID"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "CultureID",
+                        "type": "nchar(6)",
+                        "null": "NOT NULL",
+                        "pk_references": [
+                            {
+                                "schema": "Production",
+                                "table": "Culture",
+                                "column": "CultureID"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "ModifiedDate",
+                        "type": "datetime",
+                        "null": "NOT NULL"
+                    }
+                ]
+            },
+            {
+                "name": "ProductPhoto",
+                "columns": [
+                    {
+                        "name": "ProductPhotoID",
+                        "type": "int",
+                        "null": "NOT NULL",
+                        "fk_references": [
+                            {
+                                "schema": "Production",
+                                "table": "ProductProductPhoto",
+                                "column": "ProductPhotoID"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "ThumbNailPhoto",
+                        "type": "varbinary(max)",
+                        "null": "NULL"
+                    },
+                    {
+                        "name": "ThumbnailPhotoFileName",
+                        "type": "nvarchar(50)",
+                        "null": "NULL"
+                    },
+                    {
+                        "name": "LargePhoto",
+                        "type": "varbinary(max)",
+                        "null": "NULL"
+                    },
+                    {
+                        "name": "LargePhotoFileName",
+                        "type": "nvarchar(50)",
+                        "null": "NULL"
+                    },
+                    {
+                        "name": "ModifiedDate",
+                        "type": "datetime",
+                        "null": "NOT NULL"
+                    }
+                ]
+            },
+            {
+                "name": "ProductProductPhoto",
+                "columns": [
+                    {
+                        "name": "ProductID",
+                        "type": "int",
+                        "null": "NOT NULL",
+                        "pk_references": [
+                            {
+                                "schema": "Production",
+                                "table": "Product",
+                                "column": "ProductID"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "ProductPhotoID",
+                        "type": "int",
+                        "null": "NOT NULL",
+                        "pk_references": [
+                            {
+                                "schema": "Production",
+                                "table": "ProductPhoto",
+                                "column": "ProductPhotoID"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "Primary",
+                        "type": "Flag",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "ModifiedDate",
+                        "type": "datetime",
+                        "null": "NOT NULL"
+                    }
+                ]
+            },
+            {
+                "name": "ProductReview",
+                "columns": [
+                    {
+                        "name": "ProductReviewID",
+                        "type": "int",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "ProductID",
+                        "type": "int",
+                        "null": "NOT NULL",
+                        "pk_references": [
+                            {
+                                "schema": "Production",
+                                "table": "Product",
+                                "column": "ProductID"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "ReviewerName",
+                        "type": "Name",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "ReviewDate",
+                        "type": "datetime",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "EmailAddress",
+                        "type": "nvarchar(50)",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "Rating",
+                        "type": "int",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "Comments",
+                        "type": "nvarchar(3850)",
+                        "null": "NULL"
+                    },
+                    {
+                        "name": "ModifiedDate",
+                        "type": "datetime",
+                        "null": "NOT NULL"
+                    }
+                ]
+            },
+            {
+                "name": "ProductSubcategory",
+                "columns": [
+                    {
+                        "name": "ProductSubcategoryID",
+                        "type": "int",
+                        "null": "NOT NULL",
+                        "fk_references": [
+                            {
+                                "schema": "Production",
+                                "table": "Product",
+                                "column": "ProductSubcategoryID"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "ProductCategoryID",
+                        "type": "int",
+                        "null": "NOT NULL",
+                        "pk_references": [
+                            {
+                                "schema": "Production",
+                                "table": "ProductCategory",
+                                "column": "ProductCategoryID"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "Name",
+                        "type": "Name",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "rowguid",
+                        "type": "uniqueidentifier",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "ModifiedDate",
+                        "type": "datetime",
+                        "null": "NOT NULL"
+                    }
+                ]
+            },
+            {
+                "name": "ScrapReason",
+                "columns": [
+                    {
+                        "name": "ScrapReasonID",
+                        "type": "smallint",
+                        "null": "NOT NULL",
+                        "fk_references": [
+                            {
+                                "schema": "Production",
+                                "table": "WorkOrder",
+                                "column": "ScrapReasonID"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "Name",
+                        "type": "Name",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "ModifiedDate",
+                        "type": "datetime",
+                        "null": "NOT NULL"
+                    }
+                ]
+            },
+            {
+                "name": "TransactionHistory",
+                "columns": [
+                    {
+                        "name": "TransactionID",
+                        "type": "int",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "ProductID",
+                        "type": "int",
+                        "null": "NOT NULL",
+                        "pk_references": [
+                            {
+                                "schema": "Production",
+                                "table": "Product",
+                                "column": "ProductID"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "ReferenceOrderID",
+                        "type": "int",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "ReferenceOrderLineID",
+                        "type": "int",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "TransactionDate",
+                        "type": "datetime",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "TransactionType",
+                        "type": "nchar(1)",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "Quantity",
+                        "type": "int",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "ActualCost",
+                        "type": "money",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "ModifiedDate",
+                        "type": "datetime",
+                        "null": "NOT NULL"
+                    }
+                ]
+            },
+            {
+                "name": "TransactionHistoryArchive",
+                "columns": [
+                    {
+                        "name": "TransactionID",
+                        "type": "int",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "ProductID",
+                        "type": "int",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "ReferenceOrderID",
+                        "type": "int",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "ReferenceOrderLineID",
+                        "type": "int",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "TransactionDate",
+                        "type": "datetime",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "TransactionType",
+                        "type": "nchar(1)",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "Quantity",
+                        "type": "int",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "ActualCost",
+                        "type": "money",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "ModifiedDate",
+                        "type": "datetime",
+                        "null": "NOT NULL"
+                    }
+                ]
+            },
+            {
+                "name": "UnitMeasure",
+                "columns": [
+                    {
+                        "name": "UnitMeasureCode",
+                        "type": "nchar(3)",
+                        "null": "NOT NULL",
+                        "fk_references": [
+                            {
+                                "schema": "Production",
+                                "table": "BillOfMaterials",
+                                "column": "UnitMeasureCode"
+                            },
+                            {
+                                "schema": "Production",
+                                "table": "Product",
+                                "column": "SizeUnitMeasureCode"
+                            },
+                            {
+                                "schema": "Production",
+                                "table": "Product",
+                                "column": "WeightUnitMeasureCode"
+                            },
+                            {
+                                "schema": "Purchasing",
+                                "table": "ProductVendor",
+                                "column": "UnitMeasureCode"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "Name",
+                        "type": "Name",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "ModifiedDate",
+                        "type": "datetime",
+                        "null": "NOT NULL"
+                    }
+                ]
+            },
+            {
+                "name": "WorkOrder",
+                "columns": [
+                    {
+                        "name": "WorkOrderID",
+                        "type": "int",
+                        "null": "NOT NULL",
+                        "fk_references": [
+                            {
+                                "schema": "Production",
+                                "table": "WorkOrderRouting",
+                                "column": "WorkOrderID"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "ProductID",
+                        "type": "int",
+                        "null": "NOT NULL",
+                        "pk_references": [
+                            {
+                                "schema": "Production",
+                                "table": "Product",
+                                "column": "ProductID"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "OrderQty",
+                        "type": "int",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "StockedQty",
+                        "type": "int",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "ScrappedQty",
+                        "type": "smallint",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "StartDate",
+                        "type": "datetime",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "EndDate",
+                        "type": "datetime",
+                        "null": "NULL"
+                    },
+                    {
+                        "name": "DueDate",
+                        "type": "datetime",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "ScrapReasonID",
+                        "type": "smallint",
+                        "null": "NULL",
+                        "pk_references": [
+                            {
+                                "schema": "Production",
+                                "table": "ScrapReason",
+                                "column": "ScrapReasonID"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "ModifiedDate",
+                        "type": "datetime",
+                        "null": "NOT NULL"
+                    }
+                ]
+            },
+            {
+                "name": "WorkOrderRouting",
+                "columns": [
+                    {
+                        "name": "WorkOrderID",
+                        "type": "int",
+                        "null": "NOT NULL",
+                        "pk_references": [
+                            {
+                                "schema": "Production",
+                                "table": "WorkOrder",
+                                "column": "WorkOrderID"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "ProductID",
+                        "type": "int",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "OperationSequence",
+                        "type": "smallint",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "LocationID",
+                        "type": "smallint",
+                        "null": "NOT NULL",
+                        "pk_references": [
+                            {
+                                "schema": "Production",
+                                "table": "Location",
+                                "column": "LocationID"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "ScheduledStartDate",
+                        "type": "datetime",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "ScheduledEndDate",
+                        "type": "datetime",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "ActualStartDate",
+                        "type": "datetime",
+                        "null": "NULL"
+                    },
+                    {
+                        "name": "ActualEndDate",
+                        "type": "datetime",
+                        "null": "NULL"
+                    },
+                    {
+                        "name": "ActualResourceHrs",
+                        "type": "decimal(9,4)",
+                        "null": "NULL"
+                    },
+                    {
+                        "name": "PlannedCost",
+                        "type": "money",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "ActualCost",
+                        "type": "money",
+                        "null": "NULL"
+                    },
+                    {
+                        "name": "ModifiedDate",
+                        "type": "datetime",
+                        "null": "NOT NULL"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "name": "Purchasing",
+        "tables": [
+            {
+                "name": "ProductVendor",
+                "columns": [
+                    {
+                        "name": "ProductID",
+                        "type": "int",
+                        "null": "NOT NULL",
+                        "pk_references": [
+                            {
+                                "schema": "Production",
+                                "table": "Product",
+                                "column": "ProductID"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "BusinessEntityID",
+                        "type": "int",
+                        "null": "NOT NULL",
+                        "pk_references": [
+                            {
+                                "schema": "Purchasing",
+                                "table": "Vendor",
+                                "column": "BusinessEntityID"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "AverageLeadTime",
+                        "type": "int",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "StandardPrice",
+                        "type": "money",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "LastReceiptCost",
+                        "type": "money",
+                        "null": "NULL"
+                    },
+                    {
+                        "name": "LastReceiptDate",
+                        "type": "datetime",
+                        "null": "NULL"
+                    },
+                    {
+                        "name": "MinOrderQty",
+                        "type": "int",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "MaxOrderQty",
+                        "type": "int",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "OnOrderQty",
+                        "type": "int",
+                        "null": "NULL"
+                    },
+                    {
+                        "name": "UnitMeasureCode",
+                        "type": "nchar(3)",
+                        "null": "NOT NULL",
+                        "pk_references": [
+                            {
+                                "schema": "Production",
+                                "table": "UnitMeasure",
+                                "column": "UnitMeasureCode"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "ModifiedDate",
+                        "type": "datetime",
+                        "null": "NOT NULL"
+                    }
+                ]
+            },
+            {
+                "name": "PurchaseOrderDetail",
+                "columns": [
+                    {
+                        "name": "PurchaseOrderID",
+                        "type": "int",
+                        "null": "NOT NULL",
+                        "pk_references": [
+                            {
+                                "schema": "Purchasing",
+                                "table": "PurchaseOrderHeader",
+                                "column": "PurchaseOrderID"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "PurchaseOrderDetailID",
+                        "type": "int",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "DueDate",
+                        "type": "datetime",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "OrderQty",
+                        "type": "smallint",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "ProductID",
+                        "type": "int",
+                        "null": "NOT NULL",
+                        "pk_references": [
+                            {
+                                "schema": "Production",
+                                "table": "Product",
+                                "column": "ProductID"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "UnitPrice",
+                        "type": "money",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "LineTotal",
+                        "type": "money",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "ReceivedQty",
+                        "type": "decimal(8,2)",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "RejectedQty",
+                        "type": "decimal(8,2)",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "StockedQty",
+                        "type": "decimal(9,2)",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "ModifiedDate",
+                        "type": "datetime",
+                        "null": "NOT NULL"
+                    }
+                ]
+            },
+            {
+                "name": "PurchaseOrderHeader",
+                "columns": [
+                    {
+                        "name": "PurchaseOrderID",
+                        "type": "int",
+                        "null": "NOT NULL",
+                        "fk_references": [
+                            {
+                                "schema": "Purchasing",
+                                "table": "PurchaseOrderDetail",
+                                "column": "PurchaseOrderID"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "RevisionNumber",
+                        "type": "tinyint",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "Status",
+                        "type": "tinyint",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "EmployeeID",
+                        "type": "int",
+                        "null": "NOT NULL",
+                        "pk_references": [
+                            {
+                                "schema": "HumanResources",
+                                "table": "Employee",
+                                "column": "BusinessEntityID"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "VendorID",
+                        "type": "int",
+                        "null": "NOT NULL",
+                        "pk_references": [
+                            {
+                                "schema": "Purchasing",
+                                "table": "Vendor",
+                                "column": "BusinessEntityID"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "ShipMethodID",
+                        "type": "int",
+                        "null": "NOT NULL",
+                        "pk_references": [
+                            {
+                                "schema": "Purchasing",
+                                "table": "ShipMethod",
+                                "column": "ShipMethodID"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "OrderDate",
+                        "type": "datetime",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "ShipDate",
+                        "type": "datetime",
+                        "null": "NULL"
+                    },
+                    {
+                        "name": "SubTotal",
+                        "type": "money",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "TaxAmt",
+                        "type": "money",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "Freight",
+                        "type": "money",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "TotalDue",
+                        "type": "money",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "ModifiedDate",
+                        "type": "datetime",
+                        "null": "NOT NULL"
+                    }
+                ]
+            },
+            {
+                "name": "ShipMethod",
+                "columns": [
+                    {
+                        "name": "ShipMethodID",
+                        "type": "int",
+                        "null": "NOT NULL",
+                        "fk_references": [
+                            {
+                                "schema": "Purchasing",
+                                "table": "PurchaseOrderHeader",
+                                "column": "ShipMethodID"
+                            },
+                            {
+                                "schema": "Sales",
+                                "table": "SalesOrderHeader",
+                                "column": "ShipMethodID"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "Name",
+                        "type": "Name",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "ShipBase",
+                        "type": "money",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "ShipRate",
+                        "type": "money",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "rowguid",
+                        "type": "uniqueidentifier",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "ModifiedDate",
+                        "type": "datetime",
+                        "null": "NOT NULL"
+                    }
+                ]
+            },
+            {
+                "name": "Vendor",
+                "columns": [
+                    {
+                        "name": "BusinessEntityID",
+                        "type": "int",
+                        "null": "NOT NULL",
+                        "fk_references": [
+                            {
+                                "schema": "Purchasing",
+                                "table": "ProductVendor",
+                                "column": "BusinessEntityID"
+                            },
+                            {
+                                "schema": "Purchasing",
+                                "table": "PurchaseOrderHeader",
+                                "column": "VendorID"
+                            }
+                        ],
+                        "pk_references": [
+                            {
+                                "schema": "Person",
+                                "table": "BusinessEntity",
+                                "column": "BusinessEntityID"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "AccountNumber",
+                        "type": "AccountNumber",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "Name",
+                        "type": "Name",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "CreditRating",
+                        "type": "tinyint",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "PreferredVendorStatus",
+                        "type": "Flag",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "ActiveFlag",
+                        "type": "Flag",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "PurchasingWebServiceURL",
+                        "type": "nvarchar(1024)",
+                        "null": "NULL"
+                    },
+                    {
+                        "name": "ModifiedDate",
+                        "type": "datetime",
+                        "null": "NOT NULL"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "name": "Sales",
+        "tables": [
+            {
+                "name": "CountryRegionCurrency",
+                "columns": [
+                    {
+                        "name": "CountryRegionCode",
+                        "type": "nvarchar(3)",
+                        "null": "NOT NULL",
+                        "pk_references": [
+                            {
+                                "schema": "Person",
+                                "table": "CountryRegion",
+                                "column": "CountryRegionCode"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "CurrencyCode",
+                        "type": "nchar(3)",
+                        "null": "NOT NULL",
+                        "pk_references": [
+                            {
+                                "schema": "Sales",
+                                "table": "Currency",
+                                "column": "CurrencyCode"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "ModifiedDate",
+                        "type": "datetime",
+                        "null": "NOT NULL"
+                    }
+                ]
+            },
+            {
+                "name": "CreditCard",
+                "columns": [
+                    {
+                        "name": "CreditCardID",
+                        "type": "int",
+                        "null": "NOT NULL",
+                        "fk_references": [
+                            {
+                                "schema": "Sales",
+                                "table": "PersonCreditCard",
+                                "column": "CreditCardID"
+                            },
+                            {
+                                "schema": "Sales",
+                                "table": "SalesOrderHeader",
+                                "column": "CreditCardID"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "CardType",
+                        "type": "nvarchar(50)",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "CardNumber",
+                        "type": "nvarchar(25)",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "ExpMonth",
+                        "type": "tinyint",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "ExpYear",
+                        "type": "smallint",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "ModifiedDate",
+                        "type": "datetime",
+                        "null": "NOT NULL"
+                    }
+                ]
+            },
+            {
+                "name": "Currency",
+                "columns": [
+                    {
+                        "name": "CurrencyCode",
+                        "type": "nchar(3)",
+                        "null": "NOT NULL",
+                        "fk_references": [
+                            {
+                                "schema": "Sales",
+                                "table": "CountryRegionCurrency",
+                                "column": "CurrencyCode"
+                            },
+                            {
+                                "schema": "Sales",
+                                "table": "CurrencyRate",
+                                "column": "FromCurrencyCode"
+                            },
+                            {
+                                "schema": "Sales",
+                                "table": "CurrencyRate",
+                                "column": "ToCurrencyCode"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "Name",
+                        "type": "Name",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "ModifiedDate",
+                        "type": "datetime",
+                        "null": "NOT NULL"
+                    }
+                ]
+            },
+            {
+                "name": "CurrencyRate",
+                "columns": [
+                    {
+                        "name": "CurrencyRateID",
+                        "type": "int",
+                        "null": "NOT NULL",
+                        "fk_references": [
+                            {
+                                "schema": "Sales",
+                                "table": "SalesOrderHeader",
+                                "column": "CurrencyRateID"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "CurrencyRateDate",
+                        "type": "datetime",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "FromCurrencyCode",
+                        "type": "nchar(3)",
+                        "null": "NOT NULL",
+                        "pk_references": [
+                            {
+                                "schema": "Sales",
+                                "table": "Currency",
+                                "column": "CurrencyCode"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "ToCurrencyCode",
+                        "type": "nchar(3)",
+                        "null": "NOT NULL",
+                        "pk_references": [
+                            {
+                                "schema": "Sales",
+                                "table": "Currency",
+                                "column": "CurrencyCode"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "AverageRate",
+                        "type": "money",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "EndOfDayRate",
+                        "type": "money",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "ModifiedDate",
+                        "type": "datetime",
+                        "null": "NOT NULL"
+                    }
+                ]
+            },
+            {
+                "name": "Customer",
+                "columns": [
+                    {
+                        "name": "CustomerID",
+                        "type": "int",
+                        "null": "NOT NULL",
+                        "fk_references": [
+                            {
+                                "schema": "Sales",
+                                "table": "SalesOrderHeader",
+                                "column": "CustomerID"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "PersonID",
+                        "type": "int",
+                        "null": "NULL",
+                        "pk_references": [
+                            {
+                                "schema": "Person",
+                                "table": "Person",
+                                "column": "BusinessEntityID"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "StoreID",
+                        "type": "int",
+                        "null": "NULL",
+                        "pk_references": [
+                            {
+                                "schema": "Sales",
+                                "table": "Store",
+                                "column": "BusinessEntityID"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "TerritoryID",
+                        "type": "int",
+                        "null": "NULL",
+                        "pk_references": [
+                            {
+                                "schema": "Sales",
+                                "table": "SalesTerritory",
+                                "column": "TerritoryID"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "AccountNumber",
+                        "type": "varchar(10)",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "rowguid",
+                        "type": "uniqueidentifier",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "ModifiedDate",
+                        "type": "datetime",
+                        "null": "NOT NULL"
+                    }
+                ]
+            },
+            {
+                "name": "PersonCreditCard",
+                "columns": [
+                    {
+                        "name": "BusinessEntityID",
+                        "type": "int",
+                        "null": "NOT NULL",
+                        "pk_references": [
+                            {
+                                "schema": "Person",
+                                "table": "Person",
+                                "column": "BusinessEntityID"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "CreditCardID",
+                        "type": "int",
+                        "null": "NOT NULL",
+                        "pk_references": [
+                            {
+                                "schema": "Sales",
+                                "table": "CreditCard",
+                                "column": "CreditCardID"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "ModifiedDate",
+                        "type": "datetime",
+                        "null": "NOT NULL"
+                    }
+                ]
+            },
+            {
+                "name": "SalesOrderDetail",
+                "columns": [
+                    {
+                        "name": "SalesOrderID",
+                        "type": "int",
+                        "null": "NOT NULL",
+                        "pk_references": [
+                            {
+                                "schema": "Sales",
+                                "table": "SalesOrderHeader",
+                                "column": "SalesOrderID"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "SalesOrderDetailID",
+                        "type": "int",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "CarrierTrackingNumber",
+                        "type": "nvarchar(25)",
+                        "null": "NULL"
+                    },
+                    {
+                        "name": "OrderQty",
+                        "type": "smallint",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "ProductID",
+                        "type": "int",
+                        "null": "NOT NULL",
+                        "pk_references": [
+                            {
+                                "schema": "Sales",
+                                "table": "SpecialOfferProduct",
+                                "column": "ProductID"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "SpecialOfferID",
+                        "type": "int",
+                        "null": "NOT NULL",
+                        "pk_references": [
+                            {
+                                "schema": "Sales",
+                                "table": "SpecialOfferProduct",
+                                "column": "SpecialOfferID"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "UnitPrice",
+                        "type": "money",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "UnitPriceDiscount",
+                        "type": "money",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "LineTotal",
+                        "type": "numeric(38,6)",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "rowguid",
+                        "type": "uniqueidentifier",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "ModifiedDate",
+                        "type": "datetime",
+                        "null": "NOT NULL"
+                    }
+                ]
+            },
+            {
+                "name": "SalesOrderHeader",
+                "columns": [
+                    {
+                        "name": "SalesOrderID",
+                        "type": "int",
+                        "null": "NOT NULL",
+                        "fk_references": [
+                            {
+                                "schema": "Sales",
+                                "table": "SalesOrderDetail",
+                                "column": "SalesOrderID"
+                            },
+                            {
+                                "schema": "Sales",
+                                "table": "SalesOrderHeaderSalesReason",
+                                "column": "SalesOrderID"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "RevisionNumber",
+                        "type": "tinyint",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "OrderDate",
+                        "type": "datetime",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "DueDate",
+                        "type": "datetime",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "ShipDate",
+                        "type": "datetime",
+                        "null": "NULL"
+                    },
+                    {
+                        "name": "Status",
+                        "type": "tinyint",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "OnlineOrderFlag",
+                        "type": "Flag",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "SalesOrderNumber",
+                        "type": "nvarchar(25)",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "PurchaseOrderNumber",
+                        "type": "OrderNumber",
+                        "null": "NULL"
+                    },
+                    {
+                        "name": "AccountNumber",
+                        "type": "AccountNumber",
+                        "null": "NULL"
+                    },
+                    {
+                        "name": "CustomerID",
+                        "type": "int",
+                        "null": "NOT NULL",
+                        "pk_references": [
+                            {
+                                "schema": "Sales",
+                                "table": "Customer",
+                                "column": "CustomerID"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "SalesPersonID",
+                        "type": "int",
+                        "null": "NULL",
+                        "pk_references": [
+                            {
+                                "schema": "Sales",
+                                "table": "SalesPerson",
+                                "column": "BusinessEntityID"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "TerritoryID",
+                        "type": "int",
+                        "null": "NULL",
+                        "pk_references": [
+                            {
+                                "schema": "Sales",
+                                "table": "SalesTerritory",
+                                "column": "TerritoryID"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "BillToAddressID",
+                        "type": "int",
+                        "null": "NOT NULL",
+                        "pk_references": [
+                            {
+                                "schema": "Person",
+                                "table": "Address",
+                                "column": "AddressID"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "ShipToAddressID",
+                        "type": "int",
+                        "null": "NOT NULL",
+                        "pk_references": [
+                            {
+                                "schema": "Person",
+                                "table": "Address",
+                                "column": "AddressID"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "ShipMethodID",
+                        "type": "int",
+                        "null": "NOT NULL",
+                        "pk_references": [
+                            {
+                                "schema": "Purchasing",
+                                "table": "ShipMethod",
+                                "column": "ShipMethodID"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "CreditCardID",
+                        "type": "int",
+                        "null": "NULL",
+                        "pk_references": [
+                            {
+                                "schema": "Sales",
+                                "table": "CreditCard",
+                                "column": "CreditCardID"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "CreditCardApprovalCode",
+                        "type": "varchar(15)",
+                        "null": "NULL"
+                    },
+                    {
+                        "name": "CurrencyRateID",
+                        "type": "int",
+                        "null": "NULL",
+                        "pk_references": [
+                            {
+                                "schema": "Sales",
+                                "table": "CurrencyRate",
+                                "column": "CurrencyRateID"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "SubTotal",
+                        "type": "money",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "TaxAmt",
+                        "type": "money",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "Freight",
+                        "type": "money",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "TotalDue",
+                        "type": "money",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "Comment",
+                        "type": "nvarchar(128)",
+                        "null": "NULL"
+                    },
+                    {
+                        "name": "rowguid",
+                        "type": "uniqueidentifier",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "ModifiedDate",
+                        "type": "datetime",
+                        "null": "NOT NULL"
+                    }
+                ]
+            },
+            {
+                "name": "SalesOrderHeaderSalesReason",
+                "columns": [
+                    {
+                        "name": "SalesOrderID",
+                        "type": "int",
+                        "null": "NOT NULL",
+                        "pk_references": [
+                            {
+                                "schema": "Sales",
+                                "table": "SalesOrderHeader",
+                                "column": "SalesOrderID"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "SalesReasonID",
+                        "type": "int",
+                        "null": "NOT NULL",
+                        "pk_references": [
+                            {
+                                "schema": "Sales",
+                                "table": "SalesReason",
+                                "column": "SalesReasonID"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "ModifiedDate",
+                        "type": "datetime",
+                        "null": "NOT NULL"
+                    }
+                ]
+            },
+            {
+                "name": "SalesPerson",
+                "columns": [
+                    {
+                        "name": "BusinessEntityID",
+                        "type": "int",
+                        "null": "NOT NULL",
+                        "fk_references": [
+                            {
+                                "schema": "Sales",
+                                "table": "SalesOrderHeader",
+                                "column": "SalesPersonID"
+                            },
+                            {
+                                "schema": "Sales",
+                                "table": "SalesPersonQuotaHistory",
+                                "column": "BusinessEntityID"
+                            },
+                            {
+                                "schema": "Sales",
+                                "table": "SalesTerritoryHistory",
+                                "column": "BusinessEntityID"
+                            },
+                            {
+                                "schema": "Sales",
+                                "table": "Store",
+                                "column": "SalesPersonID"
+                            }
+                        ],
+                        "pk_references": [
+                            {
+                                "schema": "HumanResources",
+                                "table": "Employee",
+                                "column": "BusinessEntityID"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "TerritoryID",
+                        "type": "int",
+                        "null": "NULL",
+                        "pk_references": [
+                            {
+                                "schema": "Sales",
+                                "table": "SalesTerritory",
+                                "column": "TerritoryID"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "SalesQuota",
+                        "type": "money",
+                        "null": "NULL"
+                    },
+                    {
+                        "name": "Bonus",
+                        "type": "money",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "CommissionPct",
+                        "type": "smallmoney",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "SalesYTD",
+                        "type": "money",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "SalesLastYear",
+                        "type": "money",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "rowguid",
+                        "type": "uniqueidentifier",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "ModifiedDate",
+                        "type": "datetime",
+                        "null": "NOT NULL"
+                    }
+                ]
+            },
+            {
+                "name": "SalesPersonQuotaHistory",
+                "columns": [
+                    {
+                        "name": "BusinessEntityID",
+                        "type": "int",
+                        "null": "NOT NULL",
+                        "pk_references": [
+                            {
+                                "schema": "Sales",
+                                "table": "SalesPerson",
+                                "column": "BusinessEntityID"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "QuotaDate",
+                        "type": "datetime",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "SalesQuota",
+                        "type": "money",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "rowguid",
+                        "type": "uniqueidentifier",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "ModifiedDate",
+                        "type": "datetime",
+                        "null": "NOT NULL"
+                    }
+                ]
+            },
+            {
+                "name": "SalesReason",
+                "columns": [
+                    {
+                        "name": "SalesReasonID",
+                        "type": "int",
+                        "null": "NOT NULL",
+                        "fk_references": [
+                            {
+                                "schema": "Sales",
+                                "table": "SalesOrderHeaderSalesReason",
+                                "column": "SalesReasonID"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "Name",
+                        "type": "Name",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "ReasonType",
+                        "type": "Name",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "ModifiedDate",
+                        "type": "datetime",
+                        "null": "NOT NULL"
+                    }
+                ]
+            },
+            {
+                "name": "SalesTaxRate",
+                "columns": [
+                    {
+                        "name": "SalesTaxRateID",
+                        "type": "int",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "StateProvinceID",
+                        "type": "int",
+                        "null": "NOT NULL",
+                        "pk_references": [
+                            {
+                                "schema": "Person",
+                                "table": "StateProvince",
+                                "column": "StateProvinceID"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "TaxType",
+                        "type": "tinyint",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "TaxRate",
+                        "type": "smallmoney",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "Name",
+                        "type": "Name",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "rowguid",
+                        "type": "uniqueidentifier",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "ModifiedDate",
+                        "type": "datetime",
+                        "null": "NOT NULL"
+                    }
+                ]
+            },
+            {
+                "name": "SalesTerritory",
+                "columns": [
+                    {
+                        "name": "TerritoryID",
+                        "type": "int",
+                        "null": "NOT NULL",
+                        "fk_references": [
+                            {
+                                "schema": "Person",
+                                "table": "StateProvince",
+                                "column": "TerritoryID"
+                            },
+                            {
+                                "schema": "Sales",
+                                "table": "Customer",
+                                "column": "TerritoryID"
+                            },
+                            {
+                                "schema": "Sales",
+                                "table": "SalesOrderHeader",
+                                "column": "TerritoryID"
+                            },
+                            {
+                                "schema": "Sales",
+                                "table": "SalesPerson",
+                                "column": "TerritoryID"
+                            },
+                            {
+                                "schema": "Sales",
+                                "table": "SalesTerritoryHistory",
+                                "column": "TerritoryID"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "Name",
+                        "type": "Name",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "CountryRegionCode",
+                        "type": "nvarchar(3)",
+                        "null": "NOT NULL",
+                        "pk_references": [
+                            {
+                                "schema": "Person",
+                                "table": "CountryRegion",
+                                "column": "CountryRegionCode"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "Group",
+                        "type": "nvarchar(50)",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "SalesYTD",
+                        "type": "money",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "SalesLastYear",
+                        "type": "money",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "CostYTD",
+                        "type": "money",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "CostLastYear",
+                        "type": "money",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "rowguid",
+                        "type": "uniqueidentifier",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "ModifiedDate",
+                        "type": "datetime",
+                        "null": "NOT NULL"
+                    }
+                ]
+            },
+            {
+                "name": "SalesTerritoryHistory",
+                "columns": [
+                    {
+                        "name": "BusinessEntityID",
+                        "type": "int",
+                        "null": "NOT NULL",
+                        "pk_references": [
+                            {
+                                "schema": "Sales",
+                                "table": "SalesPerson",
+                                "column": "BusinessEntityID"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "TerritoryID",
+                        "type": "int",
+                        "null": "NOT NULL",
+                        "pk_references": [
+                            {
+                                "schema": "Sales",
+                                "table": "SalesTerritory",
+                                "column": "TerritoryID"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "StartDate",
+                        "type": "datetime",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "EndDate",
+                        "type": "datetime",
+                        "null": "NULL"
+                    },
+                    {
+                        "name": "rowguid",
+                        "type": "uniqueidentifier",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "ModifiedDate",
+                        "type": "datetime",
+                        "null": "NOT NULL"
+                    }
+                ]
+            },
+            {
+                "name": "ShoppingCartItem",
+                "columns": [
+                    {
+                        "name": "ShoppingCartItemID",
+                        "type": "int",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "ShoppingCartID",
+                        "type": "nvarchar(50)",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "Quantity",
+                        "type": "int",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "ProductID",
+                        "type": "int",
+                        "null": "NOT NULL",
+                        "pk_references": [
+                            {
+                                "schema": "Production",
+                                "table": "Product",
+                                "column": "ProductID"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "DateCreated",
+                        "type": "datetime",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "ModifiedDate",
+                        "type": "datetime",
+                        "null": "NOT NULL"
+                    }
+                ]
+            },
+            {
+                "name": "SpecialOffer",
+                "columns": [
+                    {
+                        "name": "SpecialOfferID",
+                        "type": "int",
+                        "null": "NOT NULL",
+                        "fk_references": [
+                            {
+                                "schema": "Sales",
+                                "table": "SpecialOfferProduct",
+                                "column": "SpecialOfferID"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "Description",
+                        "type": "nvarchar(255)",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "DiscountPct",
+                        "type": "smallmoney",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "Type",
+                        "type": "nvarchar(50)",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "Category",
+                        "type": "nvarchar(50)",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "StartDate",
+                        "type": "datetime",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "EndDate",
+                        "type": "datetime",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "MinQty",
+                        "type": "int",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "MaxQty",
+                        "type": "int",
+                        "null": "NULL"
+                    },
+                    {
+                        "name": "rowguid",
+                        "type": "uniqueidentifier",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "ModifiedDate",
+                        "type": "datetime",
+                        "null": "NOT NULL"
+                    }
+                ]
+            },
+            {
+                "name": "SpecialOfferProduct",
+                "columns": [
+                    {
+                        "name": "SpecialOfferID",
+                        "type": "int",
+                        "null": "NOT NULL",
+                        "fk_references": [
+                            {
+                                "schema": "Sales",
+                                "table": "SalesOrderDetail",
+                                "column": "SpecialOfferID"
+                            }
+                        ],
+                        "pk_references": [
+                            {
+                                "schema": "Sales",
+                                "table": "SpecialOffer",
+                                "column": "SpecialOfferID"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "ProductID",
+                        "type": "int",
+                        "null": "NOT NULL",
+                        "fk_references": [
+                            {
+                                "schema": "Sales",
+                                "table": "SalesOrderDetail",
+                                "column": "ProductID"
+                            }
+                        ],
+                        "pk_references": [
+                            {
+                                "schema": "Production",
+                                "table": "Product",
+                                "column": "ProductID"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "rowguid",
+                        "type": "uniqueidentifier",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "ModifiedDate",
+                        "type": "datetime",
+                        "null": "NOT NULL"
+                    }
+                ]
+            },
+            {
+                "name": "Store",
+                "columns": [
+                    {
+                        "name": "BusinessEntityID",
+                        "type": "int",
+                        "null": "NOT NULL",
+                        "fk_references": [
+                            {
+                                "schema": "Sales",
+                                "table": "Customer",
+                                "column": "StoreID"
+                            }
+                        ],
+                        "pk_references": [
+                            {
+                                "schema": "Person",
+                                "table": "BusinessEntity",
+                                "column": "BusinessEntityID"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "Name",
+                        "type": "Name",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "SalesPersonID",
+                        "type": "int",
+                        "null": "NULL",
+                        "pk_references": [
+                            {
+                                "schema": "Sales",
+                                "table": "SalesPerson",
+                                "column": "BusinessEntityID"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "Demographics",
+                        "type": "xml",
+                        "null": "NULL"
+                    },
+                    {
+                        "name": "rowguid",
+                        "type": "uniqueidentifier",
+                        "null": "NOT NULL"
+                    },
+                    {
+                        "name": "ModifiedDate",
+                        "type": "datetime",
+                        "null": "NOT NULL"
+                    }
+                ]
+            }
+        ]
+    }
+]
