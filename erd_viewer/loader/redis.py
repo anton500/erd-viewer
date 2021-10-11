@@ -5,7 +5,7 @@ from erd_viewer.loader.config import config
 
 class RedisClient:
 
-    con_pool = redis.ConnectionPool().from_url("unix://@/tmp/redis/redis.sock?db=0")
+    con_pool = redis.ConnectionPool().from_url("unix://@/var/run/redis/redis.sock?db=0")
 
     r = redis.Redis(connection_pool=con_pool)
     r.close()
