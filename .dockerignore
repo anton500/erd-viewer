@@ -1,1 +1,10 @@
-**/__pycache__/
+*
+!data/sample_db_schema.json
+!docker-compose/
+!erd_viewer/
+!nginx/
+!redis/
+!uwsgi/
+!web/
+!docker-entrypoint.sh
+!requirements.txt

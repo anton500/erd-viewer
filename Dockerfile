@@ -49,7 +49,6 @@ FROM python:3.9-alpine3.14
 
 WORKDIR /usr/erd-viewer
 COPY requirements.txt .
-COPY web /usr/share/nginx/html
 
 RUN apk add --no-cache \
         pcre \
@@ -68,8 +67,7 @@ RUN apk add --no-cache \
     && mkdir -p /var/run/uwsgi \
     && chown uwsgi:nginx /var/run/uwsgi \
     && mkdir -p /var/run/redis \
-    && chown redis:redis /var/run/redis \
-    && chown -R nginx:nginx /usr/share/nginx/html
+    && chown redis:redis /var/run/redis
 
 COPY --from=graphviz_builder /tmp/graphviz/ /tmp/gts/ /usr/local/
 COPY --from=graphviz_builder /usr/share/fonts/truetype/msttcorefonts/ /usr/share/fonts/truetype/msttcorefonts/
@@ -81,10 +79,12 @@ COPY uwsgi/uwsgi.ini uwsgi.ini
 
 COPY data/sample_db_schema.json data/sample_db_schema.json
 COPY erd_viewer/ erd_viewer/
+COPY web /usr/share/nginx/html
 
 EXPOSE 80/tcp
 
 COPY docker-entrypoint.sh .
-RUN chmod 755 docker-entrypoint.sh
+RUN chown -R nginx:nginx /usr/share/nginx/html \
+    && chmod 755 docker-entrypoint.sh
 
 ENTRYPOINT ["./docker-entrypoint.sh"]
