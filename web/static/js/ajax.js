@@ -28,7 +28,7 @@ function insertGraph(svg) {
   var svgObject = svgDiv.getElementsByTagName("svg")[0];
   svgPanZoom(svgObject, {
     controlIconsEnabled: true,
-    zoomScaleSensitivity: 0.5,
+    zoomScaleSensitivity: 0.2,
   });
 }
 
