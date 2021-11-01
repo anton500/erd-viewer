@@ -3,10 +3,13 @@ services:
   erd-viewer:
     build:
       context: .
+      dockerfile: ./docker-compose/Dockerfile
     image: erd-viewer:latest
     volumes:
-      - redis_socket:/tmp/redis:z
       - ./data:/usr/erd-viewer/data:ro,z
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
     expose:
       - 3031/tcp
     depends_on:
@@ -15,7 +18,7 @@ services:
   nginx:
     build:
       context: .
-      dockerfile: ./nginx/Dockerfile
+      dockerfile: ./docker-compose/nginx/Dockerfile
     image: erd-viewer_nginx:latest
     ports:
       - 4444:80/tcp
@@ -26,16 +29,11 @@ services:
   redis:
     build:
       context: .
-      dockerfile: ./redis/Dockerfile
+      dockerfile: ./docker-compose/redis/Dockerfile
     image: erd-viewer_redis:latest
-    volumes:
-      - redis_socket:/tmp/redis:z
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 10s
       timeout: 10s
       retries: 3
       start_period: 10s
-
-volumes:
-  redis_socket:

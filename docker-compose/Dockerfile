@@ -49,7 +49,6 @@ FROM python:3.9-alpine3.14
 
 WORKDIR /usr/erd-viewer
 COPY requirements.txt .
-COPY web /usr/share/nginx/html
 
 RUN apk add --no-cache \
         pcre \
@@ -58,33 +57,24 @@ RUN apk add --no-cache \
         freetype \
         fontconfig \
         libstdc++ \
-        nginx \
-        redis \
     && fc-cache -f \
     && pip install --no-cache-dir -r requirements.txt \
-    && rm requirements.txt \
-    && adduser -D -H -s /sbin/nologin -G nginx uwsgi \
-    && addgroup uwsgi redis \
-    && mkdir -p /var/run/uwsgi \
-    && chown uwsgi:nginx /var/run/uwsgi \
-    && mkdir -p /var/run/redis \
-    && chown redis:redis /var/run/redis \
-    && chown -R nginx:nginx /usr/share/nginx/html
+    && rm requirements.txt
 
 COPY --from=graphviz_builder /tmp/graphviz/ /tmp/gts/ /usr/local/
 COPY --from=graphviz_builder /usr/share/fonts/truetype/msttcorefonts/ /usr/share/fonts/truetype/msttcorefonts/
 COPY --from=uwsgi_builder /tmp/uwsgi /usr/local/
 
-COPY nginx/nginx_uwsgi.conf /etc/nginx/http.d/default.conf
-COPY redis/redis.conf /etc/redis.conf
-COPY uwsgi/uwsgi.ini uwsgi.ini
+COPY docker-compose/nginx/nginx_uwsgi.conf /etc/nginx/http.d/default.conf
+COPY docker-compose/redis/redis.conf /etc/redis.conf
+COPY docker-compose/uwsgi/uwsgi.ini uwsgi.ini
 
 COPY data/sample_db_schema.json data/sample_db_schema.json
 COPY erd_viewer/ erd_viewer/
 
-EXPOSE 80/tcp
+EXPOSE 3031/tcp
 
-COPY docker-entrypoint.sh .
+COPY docker-compose/docker-entrypoint.sh .
 RUN chmod 755 docker-entrypoint.sh
 
 ENTRYPOINT ["./docker-entrypoint.sh"]

@@ -1,14 +1,21 @@
+import os
 import redis
-
-from erd_viewer.loader.config import config
 
 
 class RedisClient:
 
-    con_pool = redis.ConnectionPool().from_url("unix://@/var/run/redis/redis.sock?db=0")
+    _REDIS_DB = "0"
 
-    r = redis.Redis(connection_pool=con_pool)
-    r.close()
+    _REDIS_HOST = os.getenv("REDIS_HOST")
+    _REDIS_PORT = os.getenv("REDIS_PORT", "6379")
+
+    _REDIS_SOCKET = "/var/run/redis/redis.sock"
+
+    if _REDIS_HOST:
+        con_str = f"redis://{_REDIS_HOST}:{_REDIS_PORT}/{_REDIS_DB}"
+    else:
+        con_str = f"unix://{_REDIS_SOCKET}?db={_REDIS_DB}"
+    _con_pool = redis.ConnectionPool().from_url(con_str)
 
     def get_client(self) -> redis.Redis:
-        return redis.Redis(connection_pool=self.con_pool)
+        return redis.Redis(connection_pool=self._con_pool)
