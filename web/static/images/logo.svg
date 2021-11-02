@@ -1,0 +1,15 @@
+<?xml version="1.0" standalone="no"?>
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <g>
+    <circle cx="255.50002" cy="255.50000" fill="#ffffff" stroke="none" r="255.50037" />
+    <circle cx="395.83679" cy="152.02266" fill="#000000" stroke="#000000" stroke-width="17.6757" r="46.398674" />
+    <circle cx="252.55661" cy="259.49835" fill="none" stroke="#000000" stroke-width="27.3973" r="78.387825" />
+    <circle cx="358.16953" cy="420.90213" fill="#000000" stroke="#000000" stroke-width="17.6757" r="39.193913" />
+    <circle cx="252.55661" cy="57.527126" fill="#000000" stroke="#000000" stroke-width="17.6757" r="39.193913" />
+    <circle cx="66.387444" cy="258.14615" fill="#000000" stroke="#000000" stroke-width="17.6757" r="39.193913" />
+    <path d="M 252.55659,96.722958 V 181.11551" fill="none" stroke="#000000" stroke-width="11.4892" stroke-miterlimit="10" />
+    <path d="m 425.23036,130.23605 -105.57687,90.5437" fill="none" stroke="#000000" stroke-width="11.4892" stroke-miterlimit="10" />
+    <path d="M 342.21965,410.43057 285.34086,319.95115" fill="none" stroke="#000000" stroke-width="11.4892" stroke-miterlimit="10" />
+    <path d="m 105.58328,258.14615 68.58165,1.35219" fill="none" stroke="#000000" stroke-width="11.4892" stroke-miterlimit="10" />
+  </g>
+</svg>
