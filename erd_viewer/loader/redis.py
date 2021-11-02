@@ -12,10 +12,10 @@ class RedisClient:
     _REDIS_SOCKET = "/var/run/redis/redis.sock"
 
     if _REDIS_HOST:
-        con_str = f"redis://{_REDIS_HOST}:{_REDIS_PORT}/{_REDIS_DB}"
+        _con_str = f"redis://{_REDIS_HOST}:{_REDIS_PORT}/{_REDIS_DB}"
     else:
-        con_str = f"unix://{_REDIS_SOCKET}?db={_REDIS_DB}"
-    _con_pool = redis.ConnectionPool().from_url(con_str)
+        _con_str = f"unix://{_REDIS_SOCKET}?db={_REDIS_DB}"
+    _con_pool = redis.ConnectionPool().from_url(_con_str)
 
     def get_client(self) -> redis.Redis:
         return redis.Redis(connection_pool=self._con_pool)
