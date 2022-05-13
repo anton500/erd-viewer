@@ -79,7 +79,7 @@ COPY nginx/nginx_uwsgi.conf /etc/nginx/http.d/default.conf
 COPY redis/redis.conf /etc/redis.conf
 COPY uwsgi/uwsgi.ini uwsgi.ini
 
-COPY data/sample_db_schema.json data/sample_db_schema.json
+COPY data/sample_db_schema.json data/db_schema.json
 COPY erd_viewer/ erd_viewer/
 COPY web /usr/share/nginx/html
 
